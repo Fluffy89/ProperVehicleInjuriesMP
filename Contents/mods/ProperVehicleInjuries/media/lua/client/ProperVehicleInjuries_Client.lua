@@ -16,11 +16,6 @@ local interval = getSandboxOptions():getOptionByName("ProperVehicleInjuries.inte
 local prevSpeed = 0
 local injuryLockout = 40
 
--- Default injury times
--- Scratch time = 7, 16
--- Cut time = 10, 20
--- Fracture time = 20, 30
-
 -- GLOBAL BODYPART TABLES --
 local bodyParts
 local bodyPartsByName
@@ -298,12 +293,11 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 
 	local pTraits = p:getTraits() -- get player traits
 	
-	------------------------------------- AIRBAG TEST START	
+	------------------------------------- HANDLING AIRBAG
 	local reductionType = getDamageReductionType(spdDiff, seatbeltIsBuckled)
 	local damageReductionPercent = 0 -- Default damage and fracture values if no airbag or seatbelts are installed or worn
 	local fractureReductionPercent = 0
 	local airbagCondition = 1
-	--NOTE: airbag damage/fracture reduction should be multiplied by airbagCondition if sBO workingSeatbelt.airbagsAffectedByCondition is true
 	
 	if (options.workingSeatbeltInstalled) then	
 	
@@ -339,13 +333,11 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	damageReductionPercent = 1 - damageReductionPercent
 	fractureReductionPercent = 1 - fractureReductionPercent
 	
-	------------------------------------- AIRBAG TEST END
+	------------------------------------- AIRBAG END
 	
 	-- Deal flat damage to player
 	local flatDamage = spdDiff * options.flatDamagePercent * damageReductionPercent
 	p:getBodyDamage():ReduceGeneralHealth(flatDamage)
-	--print("[PVI] ReductionType(" .. reductionType .. ") dealing " .. string.format("%.2f", flatDamage) .. " * " .. string.format("%.2f", damageReductionPercent) .. " = " .. string.format("%.2f", flatDamage * damageReductionPercent) .. " damage")
-	--print("[PVI] Airbag has condition of " .. string.format("%.2f", airbagCondition))
 	
 	------------------------------------- EJECTION TEST START
 	--See WorkingSeatbelt_DamageEvent.lua for additional ejection criteria
@@ -357,6 +349,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	end
 	------------------------------------- EJECTION TEST END
 	
+	-- Main loop, iterate up to maxInjuries times, and for each one, calculate the injury type, time, and body location.
 	for i=1, sevSpd.maxInjuries do
 		local injureChance = ZombRand(1, 101)
 
@@ -368,8 +361,6 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			if (injuryType == "scratch") or (injuryType == "deepWound") then injuryTime = ZombRand(sevSpd.scratchTimeMin, sevSpd.scratchTimeMax)
 			elseif (injuryType == "cut") or (injuryType == "deepGlass") then injuryTime = ZombRand(sevSpd.cutTimeMin, sevSpd.cutTimeMax)
 			elseif (injuryType == "fracture") or (injuryType == "fullFracture") then injuryTime = ZombRand(sevSpd.fractureTimeMin, sevSpd.fractureTimeMax) end
-						
-			--print("[PVI] InjuryTime(" .. injuryType .."): " .. tostring(injuryTime))
 			
 			-- Should traits be taken into account?
 			if (options.traitsAffectInjuries) then
@@ -381,8 +372,6 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 					
 				end
 			end
-			
-			--print("[PVI] InjuryTime after trait check: " .. tostring(injuryTime))
 			
 			local helmetType = helmetWorn()
 			--Check if a helmet is worn, head is being injured, and helmets give protection, then reduce injury time
@@ -404,7 +393,6 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 				end
 			end
 			
-			--print("[PVI] Applying InjuryTime(" .. injuryType .."): " .. tostring(injuryTime) .. "...\n")
 			-- If neither of the above are true, don't modify injury time and just pass in the injury time specified in sandbox options
 			handleInjury(bodyPartToInjure, injuryType, injuryTime)
 		end
@@ -427,9 +415,6 @@ end
 local function checkCollision()
 	local p = getPlayer()
 	local v = p:getVehicle()
-	
-	-- getPlayer():getTraits():contains("traitName") - returns boolean, might be whether trait is there or not?
-	-- should be able to use get() and size() on it according to the javadoc
 	
 	-- ticks increases per tick, interval is a ratelimit for how often this is called
 	if (ticks >= interval) and (v ~= nil) then
@@ -472,8 +457,7 @@ local function checkCollision()
 
 		end
 
-		-- sets prevSpeed to what the current corrected vehicle speed is and resets the
-		-- ticks that have passed since checkCollision() was last called
+		-- sets prevSpeed to current speed to track the difference in speeds between checks
 		prevSpeed = vehicleSpeed
 		ticks = 0
 		
@@ -630,20 +614,3 @@ end
 
 Events.OnGameStart.Add(initMod)
 print("Initializing ProperVehicleInjuriesMP...")
-
--- CHANGELOG --
--- Update 3.3
--- Real knockout support: low/med/high/fatal collision severities now have an option to specify the knockout chance for that severity. The knockout chance for each severity overrides the Real Knockout chance for vehicle collisions.
--- Working Seatbelt Airbag support: Airbags in vehicles from Working Seatbelt will now stack their damage protection on top of the seatbelt protection up to a maximum that users can specify in the PVI sandbox options (default is 80% protection)
--- Working Seatbelt Ejection support: Players can now be ejected from the vehicle if the following list of conditions are met (specified by Working Seatbelt):
-	--The player must be in a vehicle
-	--The sandbox option for Working Seatbelts named "Can Player Be Ejected" must be checked/set to true
-	--The difference in speed before and after the collision must be higher than Working Seatbelts "Eject Minimum Crash Strength" sandbox option
-	--The player must NOT be wearing their seatbelt
-	--The vehicle the player is in cannot be in reverse
-	--The windshield must have a condition of <= 0
-	--The windshield MUST be missing/completely broken
--- Added 'PIV - Debug' sandbox options page, this will have any experimental/debug related sandbox options.
-
--- PVI now forces the vehicles internal direction variable to match the player when in any gear other than reverse, and forces it to be opposite when going in reverse.
--- New sandbox option added to toggle whether or not PVI forces the vanilla option 'Player Damage From Collision'

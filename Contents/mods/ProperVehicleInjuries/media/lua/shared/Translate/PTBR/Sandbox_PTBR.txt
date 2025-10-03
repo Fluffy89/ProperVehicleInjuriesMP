@@ -1,0 +1,108 @@
+Sandbox_PTBR =
+{
+	Sandbox_PVIMain = "PVI - Principal",
+	Sandbox_PVIDebug = "PVI - Depuracao",
+	Sandbox_PVILow = "PVI - Baixa Gravidade",
+	Sandbox_PVIMed = "PVI - Gravidade Media",
+	Sandbox_PVIHigh = "PVI - Alta Gravidade",
+	Sandbox_PVIFatal = "PVI - Gravidade Fatal",
+
+
+
+	Sandbox_interval = "Intervalo",
+	Sandbox_interval_tooltip = "O numero de ticks que devem passar antes que o PVI verifique outra colisao."
+
+	Sandbox_threshold = "Limite",
+	Sandbox_threshold_tooltip = "A diferenca minima de velocidade antes/depois de uma colisao para PVI causar lesoes. Este valor deve ser menor que a opcao de sandbox de limite superior de baixa velocidade."
+
+	Sandbox_flatDamagePercent = "Porcentagem fixa de danos",
+	Sandbox_flatDamagePercent_tooltip = "Em caso de colisao, aplique esta porcentagem da diferenca na velocidade apos uma colisao como dano plano."
+
+	Sandbox_maxDamageReduction = "Reducao Maxima de Dano",
+	Sandbox_maxDamageReduction_tooltip = "A reducao maxima de danos que pode ser aplicada pelo cinto de segurança e/ou airbag. NOTA: nao faz nada sem cintos de segurança funcionais (Working Seatbelt)."
+
+	Sandbox_minSpeedForInjury = "Velocidade minima para lesoes",
+	Sandbox_minSpeedForInjury_tooltip = "lesoes causadas por colisoes de veiculos nao podem ocorrer se o veiculo estiver viajando mais devagar que esta velocidade."
+
+	Sandbox_knockoutsEnabled = "Desmaios habilitados",
+	Sandbox_knockoutsEnabled_tooltip = "Ativa/desativa nocautes em acidentes de carro causados por PVI. NOTA: ISSO REQUER A INSTALAÇÃO DE DESMAIO REAL (Real Knockouts)."
+
+	Sandbox_deathFromCrash = "Morte por colisoes",
+	Sandbox_deathFromCrash_tooltip = "Ativa/desativa a chance de morrer no impacto em uma colisao. Isso nao impede a morte se sofrer muito dano, apenas ativa/desativa a morte instantanea no impacto."
+
+	Sandbox_traitsAffectInjuries = "As caracteristicas afetam a duracao da lesao",
+	Sandbox_traitsAffectInjuries_tooltip = "Ativa/desativa o curador rapido/lento, afetando a duracao das lesoes. O curador rapido/lento recupera 30% mais rapido/mais lento, respectivamente."
+
+	Sandbox_helmetsGiveProtection = "Capacetes protegem a cabeca",
+	Sandbox_helmetsGiveProtection_tooltip = "Ativa/desativa capacetes reduzindo a gravidade dos ferimentos na cabeca dos jogadores."
+
+	Sandbox_fullHelmetModifier = "Protecao total do capacete",
+	Sandbox_fullHelmetModifier_tooltip = "O tempo de duracao de uma lesao na cabeca eh reduzido nesta porcentagem ao usar um capacete completo, como o capacete de motociclista."
+
+	Sandbox_halfHelmetModifier = "Protecao de meio capacete",
+	Sandbox_halfHelmetModifier_tooltip = "O tempo de duracao de uma lesao na cabeca eh reduzido nesta porcentagem ao usar um capacete de meia cabeca, como um capacete de equitacao."
+
+
+
+	Sandbox_debugReadMe = "--- Leia-me de depuracao ---",
+	Sandbox_debugReadMe_tooltip = "As opcoes abaixo sao opcoes experimentais ou destinam-se a depuracao. eh altamente recomendavel nao alterar essas configuracoes de seus valores padrao, a menos que voce informe o contrario."
+
+	Sandbox_disableVanillaCrashDamage = "Desativar dano de colisao Vanilla",
+	Sandbox_disableVanillaCrashDamage_tooltip = "Quando marcado, o PVI forca a opcao vanilla sandbox 'Player Damage From Crash' para falso. AVISO: Desmarcar esta opcao e reativar 'Player Damage From Crash' farah com que lesoes/danos por colisao causados por PVI e vanilla se acumulem ."
+
+	Sandbox_forceAlignVehicleDir = "forcar alinhamento da direcao do veiculo",
+	Sandbox_forceAlignVehicleDir_tooltip = "forca a direcao dos veiculos para coincidir com a direção dos jogadores e inverte a direção dos veiculos quando estiver em marcha a reh. AVISO: Desativar esta opcao interromperah/desativarah as ejecoes dos veiculos."
+	
+	
+	
+	Sandbox_upperBound = "Limite Superior",
+	Sandbox_upperBound_tooltip = "A velocidade maxima que um veiculo pode estar viajando para que uma colisao seja considerada desta gravidade."
+
+	Sandbox_scratchTimeMin = "Tempo minimo de arranhao",
+	Sandbox_scratchTimeMin_tooltip = "A quantidade minima de horas de jogo que um arranhao durarah."
+
+	Sandbox_scratchTimeMax = "Tempo maximo de arranhao",
+	Sandbox_scratchTimeMax_tooltip = "A quantidade maxima de horas de jogo que um arranhao pode durar."
+
+	Sandbox_cutTimeMin = "Tempo minimo de Laceracao",
+	Sandbox_cutTimeMin_tooltip = "A quantidade minima de horas de jogo que uma laceracao durarah."
+
+	Sandbox_cutTimeMax = "Tempo maximo de Laceracao",
+	Sandbox_cutTimeMax_tooltip = "A quantidade maxima de horas de jogo que uma laceracao durarah."
+
+	Sandbox_fractureTimeMin = "Tempo minimo de Fratura",
+	Sandbox_fractureTimeMin_tooltip = "A quantidade minima de horas de jogo que uma fratura durarah."
+
+	Sandbox_fractureTimeMax = "Tempo maximo de Fratura",
+	Sandbox_fractureTimeMax_tooltip = "A quantidade maxima de horas de jogo que uma fratura durarah."
+
+	Sandbox_injuryChance = "Probabilidade de lesao",
+	Sandbox_injuryChance_tooltip = "A chance por lesao de uma lesao ser causada ao jogador. Esta chance eh rolada por lesao ateh o maxInjuries especificado."
+
+	Sandbox_maxInjuries = "Maximo de lesoes",
+	Sandbox_maxInjuries_tooltip = "A quantidade maxima de lesoes que podem ser sofridas por colisao. Fraturas/Fraturas Completas de Membros sao roladas separadamente."
+
+	Sandbox_scratchChance = "Peso de risco",
+	Sandbox_scratchChance_tooltip = "A chance relativa de uma lesao ser um arranhao. % de chance real depende de outros pesos de lesao."
+
+	Sandbox_cutChance = "Peso de laceracao",
+	Sandbox_cutChance_tooltip = "A chance relativa de uma lesao ser uma laceracao. % de chance real depende de outros pesos de lesao."
+
+	Sandbox_deepWoundChance = "Peso da ferida Profunda",
+	Sandbox_deepWoundChance_tooltip = "A chance relativa de que uma lesao seja profunda com um arranhao. % de chance real depende de outros pesos de lesao."
+
+	Sandbox_deepGlassChance = "Peso da ferida de vidro profundo",
+	Sandbox_deepGlassChance_tooltip = "A chance relativa de que uma lesao seja profunda com vidro e uma laceracao. % de chance real depende de outros pesos de lesao."
+
+	Sandbox_fractureChance = "Peso da fratura",
+	Sandbox_fractureChance_tooltip = "A chance relativa de que uma lesao seja uma fratura ossea singular. A porcentagem real de chance depende de outros pesos de lesao."
+
+	Sandbox_fullFractureChance = "Peso total da fratura do membro",
+	Sandbox_fullFractureChance_tooltip = "A chance relativa de que uma lesao seja uma fratura completa do membro (quebraria o braço, o antebraço e a mao em 1 lesao). % de chance real depende de outros pesos de lesao."
+
+	Sandbox_deathChance = "Chance de Morte",
+	Sandbox_deathChance_tooltip = "A chance do jogador morrer com o impacto."
+
+	Sandbox_knockoutChance = "Chance de nocaute",
+	Sandbox_knockoutChance_tooltip = "A chance de o jogador ser nocauteado com o impacto. NOTA: REQUER A INSTALAÇAO DE KNOCKOUTS REAIS, o PVI substitui a configuração de 'chance de nocaute' de Knockouts Reais apenas para acidentes de carro."
+}

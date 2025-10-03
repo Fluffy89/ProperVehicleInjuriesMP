@@ -16,9 +16,8 @@ A discussion page on the Workshop page detailing all the sandbox options players
 > Please direct any comments, concerns, and bug reports to the Steam Workshop page, either in the comments, or in a dedicated discussion page.
 
 ## Proper Vehicle Injuries Mod Trailer
-<p align="center">
-	<iframe width="1280" height="720" src="https://www.youtube.com/watch?v=NSMJXzpRuNI" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
+
+A short mod trailer can be [found on YouTube](https://www.youtube.com/watch?v=NSMJXzpRuNI).
 
 ## Overview
 

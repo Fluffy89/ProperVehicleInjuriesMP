@@ -291,7 +291,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	-- for loop iterates through the specified max injuries, and rolls if an injury should happen
 	-- for each possible maxInjury	
 
-	local pTraits = p:getTraits() -- get player traits
+	local pTraits = p:getCharacterTraits() -- get player traits
 	
 	------------------------------------- HANDLING AIRBAG
 	local reductionType = getDamageReductionType(spdDiff, seatbeltIsBuckled)
@@ -364,10 +364,10 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			
 			-- Should traits be taken into account?
 			if (options.traitsAffectInjuries) then
-				if pTraits:contains("SlowHealer") then
+				if pTraits:get(CharacterTrait.SLOW_HEALER) then
 					injuryTime = injuryTime * 1.3 -- Increase healing time by 30% if p has SlowHealer
 				
-				elseif pTraits:contains("FastHealer") then
+				elseif pTraits:get(CharacterTrait.FAST_HEALER) then
 					injuryTime = injuryTime * 0.7 -- Decrease healing time by 30% if p has FastHealer
 					
 				end

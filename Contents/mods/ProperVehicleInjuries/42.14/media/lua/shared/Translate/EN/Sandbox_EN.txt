@@ -1,0 +1,108 @@
+Sandbox_EN =
+{
+	Sandbox_PVIMain = "PVI - Main",
+	Sandbox_PVIDebug = "PVI - Debug",
+	Sandbox_PVILow = "PVI - Low Severity",
+	Sandbox_PVIMed = "PVI - Medium Severity",
+	Sandbox_PVIHigh = "PVI - High Severity",
+	Sandbox_PVIFatal = "PVI - Fatal Severity",
+	
+	
+	
+	Sandbox_interval = "Interval",
+	Sandbox_interval_tooltip = "The number of ticks that must pass before PVI will check for another collision."
+	
+	Sandbox_threshold = "Threshold",
+	Sandbox_threshold_tooltip = "The minimum speed difference before/after a collosision for PVI to cause injuries. This value should be less than the low speed upper bound sandbox option."
+	
+	Sandbox_flatDamagePercent = "Flat Damage Percent",
+	Sandbox_flatDamagePercent_tooltip = "On collision, apply this percent of the difference in speed after a collision as flat damage."
+	
+	Sandbox_maxDamageReduction = "Max Damage Reduction",
+	Sandbox_maxDamageReduction_tooltip = "The maximum damage reduction that can be applied from the seatbelt and/or airbag. NOTE: Does nothing without Working Seatbelts."
+	
+	Sandbox_minSpeedForInjury = "Minimum Speed for Injuries",
+	Sandbox_minSpeedForInjury_tooltip = "Injuries from vehicle collisions cannot happen if the vehicle is travelling slower than this speed."
+	
+	Sandbox_knockoutsEnabled = "Knockouts Enabled",
+	Sandbox_knockoutsEnabled_tooltip = "Enables/disables knockouts from car crashes caused by PVI. NOTE: THIS REQUIRES REAL KNOCKOUTS TO BE INSTALLED."
+	
+	Sandbox_deathFromCrash = "Death from Collisions",
+	Sandbox_deathFromCrash_tooltip = "Enables/disables the chance of dying on impact in a collision. This DOES NOT disable death from taking too much damage, it only enables/disables instant death on impact."
+	
+	Sandbox_traitsAffectInjuries = "Traits Affect Injury Duration",
+	Sandbox_traitsAffectInjuries_tooltip = "Enables/disables Fast/Slow healer affecting the duration of injuries. Fast/Slow Healer recover 30% faster/slower respectively."
+	
+	Sandbox_helmetsGiveProtection = "Helmets Protect Head",
+	Sandbox_helmetsGiveProtection_tooltip = "Enables/disables helmets reducing the severity of injuries to the players head."
+	
+	Sandbox_fullHelmetModifier = "Full Helmet Protection",
+	Sandbox_fullHelmetModifier_tooltip = "The time an injury to the head will last is reduced by this percent while wearing a full head helmet such as the motorcycle helmet."
+	
+	Sandbox_halfHelmetModifier = "Half Helmet Protection",
+	Sandbox_halfHelmetModifier_tooltip = "The time an injury to the head will last is reduced by this percent while wearing a half head helmet such as a riding helmet."
+	
+	
+	
+	Sandbox_debugReadMe = "--- Debug Read Me ---",
+	Sandbox_debugReadMe_tooltip = "The below options are either experimental or intended for debugging. It is highly recommended to not change these settings from their default values unless you've been told otherwise."
+	
+	Sandbox_disableVanillaCrashDamage = "Disable Vanilla Crash Damage",
+	Sandbox_disableVanillaCrashDamage_tooltip = "When checked, PVI forces the vanilla sandbox option 'Player Damage From Crash' to false. WARNING: Unchecking this option and then re-enabling 'Player Damage From Crash' will cause collision injuries/damage caused by PVI and vanilla to stack."
+	
+	Sandbox_forceAlignVehicleDir = "Force Align Vehicle Direction",
+	Sandbox_forceAlignVehicleDir_tooltip = "Force the vehicles direction to match the players direction, and reverses the vehicles direction when in reverse. WARNING: Disabling this option will break/disable ejections from vehicles."
+	
+	
+	
+	Sandbox_upperBound = "Upper Bound",
+	Sandbox_upperBound_tooltip = "The maximum speed a vehicle may be traveling for a collision to be considered this severity."
+	
+	Sandbox_scratchTimeMin = "Minimum Scratch Time",
+	Sandbox_scratchTimeMin_tooltip = "The minimum amount of in-game hours that a scratch will last."
+	
+	Sandbox_scratchTimeMax = "Maximum Scratch Time",
+	Sandbox_scratchTimeMax_tooltip = "The maximum amount of in-game hours that a scratch will last."
+	
+	Sandbox_cutTimeMin = "Minimum Laceration Time",
+	Sandbox_cutTimeMin_tooltip = "The minimum amount of in-game hours that a laceration will last."
+	
+	Sandbox_cutTimeMax = "Maximum Laceration Time",
+	Sandbox_cutTimeMax_tooltip = "The maximum amount of in-game hours that a laceration will last."
+	
+	Sandbox_fractureTimeMin = "Minimum Fracture Time",
+	Sandbox_fractureTimeMin_tooltip = "The minimum amount of in-game hours that a fracture will last."
+	
+	Sandbox_fractureTimeMax = "Maximum Fracture Time",
+	Sandbox_fractureTimeMax_tooltip = "The maximum amount of in-game hours that a fracture will last."
+	
+	Sandbox_injuryChance = "Injury Chance",
+	Sandbox_injuryChance_tooltip = "The chance PER INJURY that an injury will be caused to the player. This chance is rolled per injury up to the specified maxInjuries."
+	
+	Sandbox_maxInjuries = "Maximum Injuries",
+	Sandbox_maxInjuries_tooltip = "The maximum amount of injuries that may be sustained per collision."
+	
+	Sandbox_scratchChance = "Scratch Weight",
+	Sandbox_scratchChance_tooltip = "The relative chance that an injury will be a scratch. Actual % chance depends on other injury weights."
+	
+	Sandbox_cutChance = "Laceration Weight",
+	Sandbox_cutChance_tooltip = "The relative chance that an injury will be a laceration. Actual % chance depends on other injury weights."
+	
+	Sandbox_deepWoundChance = "Deep Wound Weight",
+	Sandbox_deepWoundChance_tooltip = "The relative chance that an injury will be a deep wound with a scratch. Actual % chance depends on other injury weights."
+	
+	Sandbox_deepGlassChance = "Deep Glass Wound Weight",
+	Sandbox_deepGlassChance_tooltip = "The relative chance that an injury will be a deep wound with glass and a laceration. Actual % chance depends on other injury weights."
+	
+	Sandbox_fractureChance = "Fracture Weight",
+	Sandbox_fractureChance_tooltip = "The relative chance that an injury will be a singular bone fracture. Actual % chance depends on other injury weights."
+	
+	Sandbox_fullFractureChance = "Full Limb Fracture Weight",
+	Sandbox_fullFractureChance_tooltip = "The relative chance that an injury will be a full limb fracture (would break upper arm, lower arm, hand in 1 injury). Actual % chance depends on other injury weights."
+	
+	Sandbox_deathChance = "Chance of Death",
+	Sandbox_deathChance_tooltip = "The chance of the player dying on impact."
+	
+	Sandbox_knockoutChance = "Knockout Chance",
+	Sandbox_knockoutChance_tooltip = "The chance that the player will be knocked out on impact. NOTE: REQUIRES REAL KNOCKOUTS TO BE INSTALLED, PVI overrides Real Knockouts 'knockout chance' setting for car crashes only."
+}

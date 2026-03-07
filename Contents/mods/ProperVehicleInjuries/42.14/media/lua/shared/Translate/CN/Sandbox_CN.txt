@@ -1,0 +1,108 @@
+Sandbox_CN =
+{
+	Sandbox_PVIMain = "适当的车祸伤害 - 主要选项",
+	Sandbox_PVIDebug = "适当的车祸伤害 - 调试选项",
+	Sandbox_PVILow = "适当的车祸伤害 - 轻微伤害选项",
+	Sandbox_PVIMed = "适当的车祸伤害 - 中等伤害选项",
+	Sandbox_PVIHigh = "适当的车祸伤害 - 严重伤害选项",
+	Sandbox_PVIFatal = "适当的车祸伤害 - 致命伤害选项",
+	
+	
+	
+	Sandbox_interval = "检测间隔设置",
+	Sandbox_interval_tooltip = "设置模组每隔几帧检测一次是否发生了车祸。1秒大约是15帧。"
+	
+	Sandbox_threshold = "车祸触发的最小速度差",
+	Sandbox_threshold_tooltip = "设置车祸触发的最小速度差，如果模组前后两次检测到的速度差异大于此值，就会触发车祸判定。此值必须小于轻微伤害等级的车祸速度阈值（在后面的沙盒选项里设定）。"
+	
+	Sandbox_flatDamagePercent = "伤害比例系数",
+	Sandbox_flatDamagePercent_tooltip = "设置在车祸后伤害的比例系数。计算公式为：伤害=速度差×（伤害比例系数/100）"
+	
+	Sandbox_maxDamageReduction = "安全带、安全气囊最大伤害减免百分比",
+	Sandbox_maxDamageReduction_tooltip = "设置安全带、安全气囊能带来的最大伤害减免百分比。注意：需要启用了Working Seatbelts模组此选项才能生效。"
+	
+	Sandbox_minSpeedForInjury = "车祸触发的最小速度",
+	Sandbox_minSpeedForInjury_tooltip = "设置车祸触发的最小速度（单位：Km/H）。如果车辆速度低于这个值，那就不会触发车祸判定。"
+	
+	Sandbox_knockoutsEnabled = "撞倒功能激活",
+	Sandbox_knockoutsEnabled_tooltip = "是否要激活车辆撞倒其他玩家的功能。注意：需要启用了REAL KNOCKOUTS模组此选项才能生效。"
+	
+	Sandbox_deathFromCrash = "撞死功能激活",
+	Sandbox_deathFromCrash_tooltip = "是否要激活车辆有概率撞死其他玩家的功能。注意：需要启用了REAL KNOCKOUTS模组此选项才能生效。另外，即使禁用此选项，也不能避免因为车祸伤害过多导致的其他玩家死亡。"
+	
+	Sandbox_traitsAffectInjuries = "特质是否影响部位伤害的持续时间",
+	Sandbox_traitsAffectInjuries_tooltip = "如果勾选此选项，快速/缓慢治愈者受到的部位伤害（如刮伤、骨折）恢复速度分别快/慢30%。"
+	
+	Sandbox_helmetsGiveProtection = "头盔是否保护头部",
+	Sandbox_helmetsGiveProtection_tooltip = "如果勾选此选项，佩戴头盔可以降低头部受到的部位伤害（如刮伤、骨折）持续时间。"
+	
+	Sandbox_fullHelmetModifier = "全盔减伤时长百分比",
+	Sandbox_fullHelmetModifier_tooltip = "佩戴全盔（如摩托车头盔）时，头部部位伤害持续时间减少的百分比。"
+	
+	Sandbox_halfHelmetModifier = "半盔减伤时长百分比",
+	Sandbox_halfHelmetModifier_tooltip = "佩戴半盔（如骑行头盔）时，头部部位伤害持续时间减少的百分比。"
+	
+	
+	
+	Sandbox_debugReadMe = "--- 调试说明 ---",
+	Sandbox_debugReadMe_tooltip = "以下选项要么是实验性选项，要么用于调试。强烈建议不要更改这些设置的默认值，除非您知道这些选项的真正作用。"
+	
+	Sandbox_disableVanillaCrashDamage = "禁用原版游戏自带的车辆伤害系统",
+	Sandbox_disableVanillaCrashDamage_tooltip = "如果勾选此选项，模组会强制将原版沙盒选项中的“是否启用车祸损伤”设置为禁用。 警告：如果不取消原版的车祸伤害，发生车祸时玩家将受到两次伤害（原版车祸伤害+本模组车祸伤害）。"
+	
+	Sandbox_forceAlignVehicleDir = "强制对齐车辆方向",
+	Sandbox_forceAlignVehicleDir_tooltip = "强制将车辆的方向调整为与玩家方向一致，并在倒车时反转车辆方向。 注意：需要启用了Working Seatbelts模组的相关选项此选项才能生效。如果禁用此选项将导致bug，玩家不会在车祸后正确的飞出车外。"
+	
+	
+	
+	Sandbox_upperBound = "车祸速度阈值设定",
+	Sandbox_upperBound_tooltip = "模组判断发生车祸时，车祸前的车辆速度如低于此阈值，则应用此等级的相关伤害判定。"
+	
+	Sandbox_scratchTimeMin = "刮伤最短持续时间",
+	Sandbox_scratchTimeMin_tooltip = "设置此车祸等级下，如果产生刮伤，其最短持续多少游戏内小时"
+	
+	Sandbox_scratchTimeMax = "刮伤最长持续时间",
+	Sandbox_scratchTimeMax_tooltip = "设置此车祸等级下，如果产生刮伤，其最长持续多少游戏内小时"
+	
+	Sandbox_cutTimeMin = "撕裂伤最短持续时间",
+	Sandbox_cutTimeMin_tooltip = "设置此车祸等级下，如果产生撕裂伤，其最短持续多少游戏内小时"
+	
+	Sandbox_cutTimeMax = "撕裂伤最长持续时间",
+	Sandbox_cutTimeMax_tooltip = "设置此车祸等级下，如果产生撕裂伤，其最长持续多少游戏内小时"
+	
+	Sandbox_fractureTimeMin = "骨折最短持续时间",
+	Sandbox_fractureTimeMin_tooltip = "设置此车祸等级下，如果产生骨折，其最短持续多少游戏内小时"
+	
+	Sandbox_fractureTimeMax = "骨折最长持续时间",
+	Sandbox_fractureTimeMax_tooltip = "设置此车祸等级下，如果产生骨折，其最长持续多少游戏内小时"
+	
+	Sandbox_injuryChance = "部位受伤概率",
+	Sandbox_injuryChance_tooltip = "每次进行是否受伤判定时，判定为受伤的概率。发生车祸时，模组会多次（次数取决于下一个选项的设定值）进行是否受伤判定。"
+	
+	Sandbox_maxInjuries = "部位受伤判定次数",
+	Sandbox_maxInjuries_tooltip = "设置发生车祸时，模组要进行几次是否受伤判定。"
+	
+	Sandbox_scratchChance = "刮伤权重",
+	Sandbox_scratchChance_tooltip = "设置本次部位受伤类型为刮伤的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_cutChance = "撕裂伤权重",
+	Sandbox_cutChance_tooltip = "设置本次部位受伤类型为撕裂伤的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_deepWoundChance = "深伤口权重",
+	Sandbox_deepWoundChance_tooltip = "设置本次部位受伤类型为深伤口的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_deepGlassChance = "玻璃嵌入权重",
+	Sandbox_deepGlassChance_tooltip = "设置本次部位受伤类型为玻璃嵌入的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_fractureChance = "骨折权重",
+	Sandbox_fractureChance_tooltip = "设置本次部位受伤类型为骨折的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_fullFractureChance = "完全骨折权重",
+	Sandbox_fullFractureChance_tooltip = "设置本次部位受伤类型为完全骨折的权重。概率=本类型权重/全类型权重之和。"
+	
+	Sandbox_deathChance = "死亡概率",
+	Sandbox_deathChance_tooltip = "玩家在车祸中直接死亡的概率。"
+	
+	Sandbox_knockoutChance = "淘汰机率设置",
+	Sandbox_knockoutChance_tooltip = "玩家因车祸撞击而被击倒的概率。 注意：需要安装Real Knockouts模组，本模组仅会覆盖Real Knockouts的“淘汰机率（knockoutChance）”设置。"
+}

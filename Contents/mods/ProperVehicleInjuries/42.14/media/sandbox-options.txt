@@ -1,0 +1,812 @@
+VERSION = 1,
+
+
+/***** Proper Vehicle Injuries - Main *****/
+option ProperVehicleInjuries.interval
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 20,
+	page = PVIMain,
+	translation = interval,
+}
+
+option ProperVehicleInjuries.threshold
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 30,
+	page = PVIMain,
+	translation = threshold,
+}
+
+option ProperVehicleInjuries.minSpeedForInjury
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 35,
+	page = PVIMain,
+	translation = minSpeedForInjury,
+}
+
+option ProperVehicleInjuries.flatDamagePercent
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 30,
+	page = PVIMain,
+	translation = flatDamagePercent,
+}
+
+option ProperVehicleInjuries.maxDamageReduction
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 80,
+	page = PVIMain,
+	translation = maxDamageReduction,
+}
+
+option ProperVehicleInjuries.knockoutsEnabled
+{
+	type = boolean,
+	default = true,
+	page = PVIMain,
+	translation = knockoutsEnabled,
+}
+
+option ProperVehicleInjuries.deathFromCrash
+{
+	type = boolean,
+	default = true,
+	page = PVIMain,
+	translation = deathFromCrash,
+}
+
+option ProperVehicleInjuries.traitsAffectInjuries
+{
+	type = boolean,
+	default = true,
+	page = PVIMain,
+	translation = traitsAffectInjuries,
+}
+
+option ProperVehicleInjuries.helmetsGiveProtection
+{
+	type = boolean,
+	default = true,
+	page = PVIMain,
+	translation = helmetsGiveProtection,
+}
+
+option ProperVehicleInjuries.fullHelmetModifier
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 60,
+	page = PVIMain,
+	translation = fullHelmetModifier,
+}
+
+option ProperVehicleInjuries.halfHelmetModifier
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 40,
+	page = PVIMain,
+	translation = halfHelmetModifier,
+}
+
+
+/***** Proper Vehicle Injuries - Debug *****/
+option ProperVehicleInjuries.debugReadMe
+{
+	type = boolean,
+	default = false,
+	page = PVIDebug,
+	translation = debugReadMe,
+}
+
+option ProperVehicleInjuries.disableVanillaCrashDamage
+{
+	type = boolean,
+	default = true,
+	page = PVIDebug,
+	translation = disableVanillaCrashDamage,
+}
+
+option ProperVehicleInjuries.forceAlignVehicleDir
+{
+	type = boolean,
+	default = true,
+	page = PVIDebug,
+	translation = forceAlignVehicleDir,
+}
+
+
+
+/***** Proper Vehicle Injuries - Low *****/
+option ProperVehicleInjuries.lowupperBound
+{
+	type = integer,
+	min = 0,
+	max = 110,
+	default = 50,
+	page = PVILow,
+	translation = upperBound,
+}
+
+option ProperVehicleInjuries.lowscratchTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 7,
+	page = PVILow,
+	translation = scratchTimeMin,
+}
+
+option ProperVehicleInjuries.lowscratchTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 16,
+	page = PVILow,
+	translation = scratchTimeMax,
+}
+
+option ProperVehicleInjuries.lowcutTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 10,
+	page = PVILow,
+	translation = cutTimeMin,
+}
+
+option ProperVehicleInjuries.lowcutTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 20,
+	page = PVILow,
+	translation = cutTimeMax,
+}
+
+option ProperVehicleInjuries.lowfractureTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 0,
+	page = PVILow,
+	translation = fractureTimeMin,
+}
+
+option ProperVehicleInjuries.lowfractureTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 30,
+	page = PVILow,
+	translation = fractureTimeMax,
+}
+
+option ProperVehicleInjuries.lowinjuryChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 30,
+	page = PVILow,
+	translation = injuryChance,
+}
+
+option ProperVehicleInjuries.lowmaxInjuries
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 1,
+	page = PVILow,
+	translation = maxInjuries,
+}
+
+option ProperVehicleInjuries.lowscratchChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 100,
+	page = PVILow,
+	translation = scratchChance,
+}
+
+option ProperVehicleInjuries.lowcutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = cutChance,
+}
+
+option ProperVehicleInjuries.lowdeepWoundChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = deepWoundChance,
+}
+
+option ProperVehicleInjuries.lowdeepGlassChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = deepGlassChance,
+}
+
+option ProperVehicleInjuries.lowfractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = fractureChance,
+}
+
+option ProperVehicleInjuries.lowfullFractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = fullFractureChance,
+}
+
+option ProperVehicleInjuries.lowdeathChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = deathChance,
+}
+
+option ProperVehicleInjuries.lowknockoutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVILow,
+	translation = knockoutChance,
+}
+
+
+
+/***** Proper Vehicle Injuries - Med *****/
+option ProperVehicleInjuries.medupperBound
+{
+	type = integer,
+	min = 0,
+	max = 110,
+	default = 80,
+	page = PVIMed,
+	translation = upperBound,
+}
+
+option ProperVehicleInjuries.medscratchTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 10,
+	page = PVIMed,
+	translation = scratchTimeMin,
+}
+
+option ProperVehicleInjuries.medscratchTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 20,
+	page = PVIMed,
+	translation = scratchTimeMax,
+}
+
+option ProperVehicleInjuries.medcutTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 15,
+	page = PVIMed,
+	translation = cutTimeMin,
+}
+
+option ProperVehicleInjuries.medcutTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 20,
+	page = PVIMed,
+	translation = cutTimeMax,
+}
+
+option ProperVehicleInjuries.medfractureTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 25,
+	page = PVIMed,
+	translation = fractureTimeMin,
+}
+
+option ProperVehicleInjuries.medfractureTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 30,
+	page = PVIMed,
+	translation = fractureTimeMax,
+}
+
+option ProperVehicleInjuries.medinjuryChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 50,
+	page = PVIMed,
+	translation = injuryChance,
+}
+
+option ProperVehicleInjuries.medmaxInjuries
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 2,
+	page = PVIMed,
+	translation = maxInjuries,
+}
+
+option ProperVehicleInjuries.medscratchChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 60,
+	page = PVIMed,
+	translation = scratchChance,
+}
+
+option ProperVehicleInjuries.medcutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 25,
+	page = PVIMed,
+	translation = cutChance,
+}
+
+option ProperVehicleInjuries.meddeepWoundChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 15,
+	page = PVIMed,
+	translation = deepWoundChance,
+}
+
+option ProperVehicleInjuries.meddeepGlassChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVIMed,
+	translation = deepGlassChance,
+}
+
+option ProperVehicleInjuries.medfractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 10,
+	page = PVIMed,
+	translation = fractureChance,
+}
+
+option ProperVehicleInjuries.medfullFractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVIMed,
+	translation = fullFractureChance,
+}
+
+option ProperVehicleInjuries.meddeathChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVIMed,
+	translation = deathChance,
+}
+
+option ProperVehicleInjuries.medknockoutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 10,
+	page = PVIMed,
+	translation = knockoutChance,
+}
+
+
+
+/***** Proper Vehicle Injuries - High *****/
+option ProperVehicleInjuries.highupperBound
+{
+	type = integer,
+	min = 0,
+	max = 110,
+	default = 110,
+	page = PVIHigh,
+	translation = upperBound,
+}
+
+option ProperVehicleInjuries.highscratchTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 15,
+	page = PVIHigh,
+	translation = scratchTimeMin,
+}
+
+option ProperVehicleInjuries.highscratchTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 30,
+	page = PVIHigh,
+	translation = scratchTimeMax,
+}
+
+option ProperVehicleInjuries.highcutTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 25,
+	page = PVIHigh,
+	translation = cutTimeMin,
+}
+
+option ProperVehicleInjuries.highcutTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 30,
+	page = PVIHigh,
+	translation = cutTimeMax,
+}
+
+option ProperVehicleInjuries.highfractureTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 70,
+	page = PVIHigh,
+	translation = fractureTimeMin,
+}
+
+option ProperVehicleInjuries.highfractureTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 90,
+	page = PVIHigh,
+	translation = fractureTimeMax,
+}
+
+option ProperVehicleInjuries.highinjuryChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 80,
+	page = PVIHigh,
+	translation = injuryChance,
+}
+
+option ProperVehicleInjuries.highmaxInjuries
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 3,
+	page = PVIHigh,
+	translation = maxInjuries,
+}
+
+option ProperVehicleInjuries.highscratchChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 20,
+	page = PVIHigh,
+	translation = scratchChance,
+}
+
+option ProperVehicleInjuries.highcutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 40,
+	page = PVIHigh,
+	translation = cutChance,
+}
+
+option ProperVehicleInjuries.highdeepWoundChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 25,
+	page = PVIHigh,
+	translation = deepWoundChance,
+}
+
+option ProperVehicleInjuries.highdeepGlassChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 15,
+	page = PVIHigh,
+	translation = deepGlassChance,
+}
+
+option ProperVehicleInjuries.highfractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 40,
+	page = PVIHigh,
+	translation = fractureChance,
+}
+
+option ProperVehicleInjuries.highfullFractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 15,
+	page = PVIHigh,
+	translation = fullFractureChance,
+}
+
+option ProperVehicleInjuries.highdeathChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 0,
+	page = PVIHigh,
+	translation = deathChance,
+}
+
+option ProperVehicleInjuries.highknockoutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 20,
+	page = PVIHigh,
+	translation = knockoutChance,
+}
+
+
+/***** Proper Vehicle Injuries - Fatal *****/
+option ProperVehicleInjuries.fatalscratchTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 25,
+	page = PVIFatal,
+	translation = scratchTimeMin,
+}
+
+option ProperVehicleInjuries.fatalscratchTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 35,
+	page = PVIFatal,
+	translation = scratchTimeMax,
+}
+
+option ProperVehicleInjuries.fatalcutTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 45,
+	page = PVIFatal,
+	translation = cutTimeMin,
+}
+
+option ProperVehicleInjuries.fatalcutTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 200,
+	default = 55,
+	page = PVIFatal,
+	translation = cutTimeMax,
+}
+
+option ProperVehicleInjuries.fatalfractureTimeMin
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 100,
+	page = PVIFatal,
+	translation = fractureTimeMin,
+}
+
+option ProperVehicleInjuries.fatalfractureTimeMax
+{
+	type = integer,
+	min = 0,
+	max = 1500,
+	default = 140,
+	page = PVIFatal,
+	translation = fractureTimeMax,
+}
+
+option ProperVehicleInjuries.fatalinjuryChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 100,
+	page = PVIFatal,
+	translation = injuryChance,
+}
+
+option ProperVehicleInjuries.fatalmaxInjuries
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 4,
+	page = PVIFatal,
+	translation = maxInjuries,
+}
+
+option ProperVehicleInjuries.fatalscratchChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 5,
+	page = PVIFatal,
+	translation = scratchChance,
+}
+
+option ProperVehicleInjuries.fatalcutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 35,
+	page = PVIFatal,
+	translation = cutChance,
+}
+
+option ProperVehicleInjuries.fataldeepWoundChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 35,
+	page = PVIFatal,
+	translation = deepWoundChance,
+}
+
+option ProperVehicleInjuries.fataldeepGlassChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 25,
+	page = PVIFatal,
+	translation = deepGlassChance,
+}
+
+option ProperVehicleInjuries.fatalfractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 40,
+	page = PVIFatal,
+	translation = fractureChance,
+}
+
+option ProperVehicleInjuries.fatalfullFractureChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 35,
+	page = PVIFatal,
+	translation = fullFractureChance,
+}
+
+option ProperVehicleInjuries.fataldeathChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 20,
+	page = PVIFatal,
+	translation = deathChance,
+}
+
+option ProperVehicleInjuries.fatalknockoutChance
+{
+	type = integer,
+	min = 0,
+	max = 100,
+	default = 30,
+	page = PVIFatal,
+	translation = knockoutChance,
+}

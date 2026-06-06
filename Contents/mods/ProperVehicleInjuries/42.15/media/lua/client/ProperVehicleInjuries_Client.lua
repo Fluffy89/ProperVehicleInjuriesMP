@@ -10,6 +10,8 @@
 
 -- Sandbox option 'SandboxOptions.PlayerDamageFromCrash' might be the one to disable vanilla crash damage, found in SandboxOptions.class
 
+if isServer() then return end
+
 -- GLOBAL CONSTANTS --
 local ticks = 0
 local interval = getSandboxOptions():getOptionByName("ProperVehicleInjuries.interval"):getValue() --20
@@ -31,7 +33,8 @@ local medSpd = {}
 local highSpd = {}
 local fatalSpd = {}
 
-if isServer() then return end
+-- GLOBAL FLAGS --
+local checkCollisionAdded = false
 
 function modInstalled(ModID)
 	return getActivatedMods():contains(ModID)
@@ -40,25 +43,7 @@ end
 -- setBodyParts() sets the bodyParts/bodyPartsByName tables to contain the body parts
 -- of the current character. This is called every time checkCollision would injure the character
 -- and refreshes it to ensure the bodyParts are for the current character.
-local function setBodyParts(IsoLivingCharacter character, SurvivorDesc desc)
-	print("Attempting to update body parts...")
-	
-	-- Object.getClass() returns class at runtime, how to compare though?
-	if (character.getClass() == getPlayer().getClass()) then
-		print("IsoPlayer detected/made!")
-		print((IsoPlayer)character == getPlayer())
-		
-	end
-	
-	-- Need to figure out how to initialize these and provide a fucntion to add to OnCreateLivingCharacter.
-	resetBodyParts()
-
-	
-end
-
-local function resetBodyParts()
-	local p = getPlayer()
-
+local function setBodyParts(playerIndex, p)
 	bodyParts = 
 	{
 		p:getBodyDamage():getBodyPart(BodyPartType.Head),
@@ -100,8 +85,9 @@ local function resetBodyParts()
 		lowerLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
 		leftFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
 	}
-	
+
 end
+
 
 -----    INJURY HELPER FUNCTIONS     -----
 -- getInjury() takes in the chances of each different injury, then rolls a random number
@@ -484,6 +470,26 @@ local function checkCollision()
 	end
 end
 
+-- Helper functions for adding and removing checkCollision when the player enters
+-- and exits a vehicle to prevent needless checks and executions.
+local function addCheckCollision()
+	if not checkCollisionAdded then
+		Events.OnTick.Add(checkCollision)
+		checkCollisionAdded = true
+		
+	end
+
+end
+
+local function removeCheckCollision()
+	if checkCollisionAdded then
+		Events.OnTick.Remove(checkCollision)
+		checkCollisionAdded = false
+		
+	end
+	
+end
+
 --Initialization
 local function initRealKnockoutCompatibility(sBO)
 	options.seatbeltPreventKnockout = sBO:getOptionByName("Knockout.seatbeltPreventKnockout"):getValue() -- True/False if players cannot be knocked out while wearing a seatbelt
@@ -622,11 +628,13 @@ local function initMod()
 
 
 	-- BodyParts needs to be initialized but also refreshed when the player makes a new character, otherwise, crashes/errors
-	resetBodyParts() -- Core function that actually sets body part tables
-	Events.OnCreateLivingCharacter.Add(setBodyParts) -- Event listener to reset tables when a new player is created
+	setBodyParts(0, getPlayer()) -- Core function that actually sets body part tables
+	Events.OnCreatePlayer.Add(setBodyParts) -- Register resetBodyParts to event so the tables reflect the current character
 	
 	-- This could be substituted for OnVehicleEnter and OnVehicleExit or something.
-	Events.OnTick.Add(checkCollision)
+	-- Events.OnTick.Add(checkCollision)
+	Events.OnEnterVehicle.Add(addCheckCollision)
+	Events.OnExitVehicle.Add(removeCheckCollision)
 	print("ProperVehicleInjuriesMP Core Initialized!")
 	
 	if modInstalled("WorkingSeatbelt") then initWorkingSeatbeltCompatibility(sBO) end

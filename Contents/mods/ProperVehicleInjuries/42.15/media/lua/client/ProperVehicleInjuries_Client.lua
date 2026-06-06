@@ -40,7 +40,23 @@ end
 -- setBodyParts() sets the bodyParts/bodyPartsByName tables to contain the body parts
 -- of the current character. This is called every time checkCollision would injure the character
 -- and refreshes it to ensure the bodyParts are for the current character.
-local function setBodyParts()
+local function setBodyParts(IsoLivingCharacter character, SurvivorDesc desc)
+	print("Attempting to update body parts...")
+	
+	-- Object.getClass() returns class at runtime, how to compare though?
+	if (character.getClass() == getPlayer().getClass()) then
+		print("IsoPlayer detected/made!")
+		print((IsoPlayer)character == getPlayer())
+		
+	end
+	
+	-- Need to figure out how to initialize these and provide a fucntion to add to OnCreateLivingCharacter.
+	resetBodyParts()
+
+	
+end
+
+local function resetBodyParts()
 	local p = getPlayer()
 
 	bodyParts = 
@@ -84,6 +100,7 @@ local function setBodyParts()
 		lowerLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
 		leftFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
 	}
+	
 end
 
 -----    INJURY HELPER FUNCTIONS     -----
@@ -442,7 +459,7 @@ local function checkCollision()
 		-- Check if at the current speed is severe enough to cause an injury
 		if (spdDiff >= threshold) and (prevSpeed > minSpeedForInjury) and (injuryLockout <= 0) then
 			injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
-			setBodyParts() -- resets bodyParts tables to ensure they are for the current player object, there has to be a better way?
+			-- setBodyParts() -- resets bodyParts tables to ensure they are for the current player object, there has to be a better way?
 			
 			-- Get collision severity table
 			local sevSpd = getSeverityTable(spdDiff)
@@ -604,7 +621,11 @@ local function initMod()
 	}
 
 
-	setBodyParts()
+	-- BodyParts needs to be initialized but also refreshed when the player makes a new character, otherwise, crashes/errors
+	resetBodyParts() -- Core function that actually sets body part tables
+	Events.OnCreateLivingCharacter.Add(setBodyParts) -- Event listener to reset tables when a new player is created
+	
+	-- This could be substituted for OnVehicleEnter and OnVehicleExit or something.
 	Events.OnTick.Add(checkCollision)
 	print("ProperVehicleInjuriesMP Core Initialized!")
 	

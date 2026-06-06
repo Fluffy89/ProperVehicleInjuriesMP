@@ -1,8 +1,8 @@
 name=ProperVehicleInjuriesMP
 id=ProperVehicleInjuriesMP
 author=Fluffy89
-modversion=3.10.0
-versionMin=42.14
+modversion=3.11.0
+versionMin=42.15
 description=Proper Vehicle Injuries aims to make vehicle injuries both consistent and configurable in multiplayer and singleplayer!
 icon=poster.png
 poster=poster.png

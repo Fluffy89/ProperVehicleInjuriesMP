@@ -457,7 +457,7 @@ local function checkCollision()
 			-- doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
 			-- rollDeath(sevSpd, p) -- Roll for death
 			-- rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
-			sendClientMessage(getPlayer(), "ProperVehicleInjuries", "PVICrash", {})
+			sendClientCommand(getPlayer(), "ProperVehicleInjuries", "PVICrash", {})
 
 		end
 

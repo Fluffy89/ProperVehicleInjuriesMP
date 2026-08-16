@@ -35,3 +35,4 @@ local function onClientCommand(module, command, player, args)
 end
 
 Events.OnGameBoot.Add(initProperVehicleInjuriesServer)
+Events.OnClientCommand.Add(onClientCommand)

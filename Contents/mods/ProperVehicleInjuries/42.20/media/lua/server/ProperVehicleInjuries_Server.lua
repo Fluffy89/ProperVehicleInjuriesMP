@@ -28,7 +28,19 @@ local function onClientCommand(module, command, player, args)
 	end
 	
 	if command == "PVICrash" then
-		print("Player: " .. player:getFullName() .. " was involved in a crash!")
+		print("[PVI] Player: " .. player:getFullName() .. " was involved in a crash!")
+		
+		local leftHand = player:getBodyDamage():getBodyPart(BodyPartType.Hand_L)
+		leftHand:setScratched(true, true)
+		leftHand:setScratchTime(10)
+		
+		connection = GameServer.getConnectionFromPlayer(player)
+		
+		if connection then
+			GameServer.sendPlayerDamage(player, connection)
+			
+		end
+		
 		
 	end
 

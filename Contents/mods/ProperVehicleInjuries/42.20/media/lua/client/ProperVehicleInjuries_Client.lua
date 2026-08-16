@@ -458,6 +458,19 @@ local function checkCollision()
 			-- rollDeath(sevSpd, p) -- Roll for death
 			-- rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
 			sendClientCommand(getPlayer(), "ProperVehicleInjuries", "PVICrash", {})
+			
+			-- Overhaul notes:
+			-- Making a 'PVI_Utils' file or something and moving logic there for the client or server to use might be useful/simplify things..?
+			-- Singleplayer doesn't spin up a server, so server logic doesn't appear to run.
+			-- Can tell if you're in singleplayer via checking:
+			-- if isClient() then
+				-- MP client
+			
+			-- else
+				-- SP
+			
+			-- end
+			
 
 		end
 

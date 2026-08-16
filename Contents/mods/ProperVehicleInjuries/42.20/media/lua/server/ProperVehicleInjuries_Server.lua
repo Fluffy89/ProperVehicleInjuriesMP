@@ -20,4 +20,18 @@ local function initProperVehicleInjuriesServer()
 	print("-----------------------------------------------------\n\n\n")
 end
 
+
+local function onClientCommand(module, command, player, args)
+	if module ~= "ProperVehicleInjuries" then
+		return
+	
+	end
+	
+	if command == "PVICrash" then
+		print("Player: " .. player:getFullName() .. " was involved in a crash!")
+		
+	end
+
+end
+
 Events.OnGameBoot.Add(initProperVehicleInjuriesServer)

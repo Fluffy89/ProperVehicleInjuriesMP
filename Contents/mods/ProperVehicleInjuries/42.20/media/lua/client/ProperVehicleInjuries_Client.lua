@@ -454,9 +454,10 @@ local function checkCollision()
 			if (options.workingSeatbeltInstalled) then seatbeltIsBuckled = p:getModData().Seatbelt_sbStatus end
 			
 			-- Call core functions
-			doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
-			rollDeath(sevSpd, p) -- Roll for death
-			rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
+			-- doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
+			-- rollDeath(sevSpd, p) -- Roll for death
+			-- rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
+			sendClientMessage(getPlayer(), "ProperVehicleInjuries", "PVICrash", {})
 
 		end
 

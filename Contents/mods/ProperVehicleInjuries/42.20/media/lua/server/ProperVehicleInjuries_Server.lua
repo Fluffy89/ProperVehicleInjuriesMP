@@ -34,12 +34,10 @@ local function onClientCommand(module, command, player, args)
 		leftHand:setScratched(true, true)
 		leftHand:setScratchTime(10)
 		
-		connection = GameServer.getConnectionFromPlayer(player)
-		
-		if connection then
-			GameServer.sendPlayerDamage(player, connection)
-			
-		end
+		syncBodyPart(
+			leftHand,
+			BodyPartSyncPacket.BD_scratched + BodyPartSyncPacket.BD_scratchTime
+		)
 		
 		
 	end

@@ -34,10 +34,11 @@ local function onClientCommand(module, command, player, args)
 		leftHand:setScratched(true, true)
 		leftHand:setScratchTime(10)
 		
-		syncBodyPart(
-			leftHand,
-			BodyPartSyncPacket.BD_scratched + BodyPartSyncPacket.BD_scratchTime
+		local flags = java.lang.Long.sum(
+			BodyPartSyncPacket.BD_scratched, BodyPartSyncPacket.BD_scratchTime
 		)
+		
+		syncBodyPart(leftHand, flags)
 		
 		
 	end

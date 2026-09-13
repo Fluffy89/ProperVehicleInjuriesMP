@@ -1,5 +1,8 @@
 if not isServer() then return end
 
+PVI = PVI or {}
+
+
 local function initProperVehicleInjuriesServer()
 	local sBO = getSandboxOptions()
 	

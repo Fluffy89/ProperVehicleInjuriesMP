@@ -26,7 +26,7 @@ local function startMonitoringPlayer(player)
 	
 end
 
-local function stopMonitoringPlayer(playerName)
+local function stopMonitoringPlayer(player)
 	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
 	
 end

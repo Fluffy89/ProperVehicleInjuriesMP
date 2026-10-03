@@ -17,6 +17,8 @@ local monitoringCollisions = false
 
 
 -- MONITORED PLAYERS --
+local playerCount = 0
+local bodyPartCount = 0
 local monitoredPlayers = {} -- Holds table for each player, that holds that player's previous speed and speed difference
 local playerBodyParts = {}
 
@@ -24,53 +26,75 @@ local playerBodyParts = {}
 -----    PLAYER MONITORING     -----
 local function startMonitoringPlayer(player)
 	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName())
+	playerCount = playerCount + 1
+	
+	-- Should only start monitoring checkCollisions when we:
+		-- Have at least 1 player in a vehicle
+		-- Aren't already monitoring collisions
+	if (playerCount > 0) and (not monitoringCollisions) then
+		PVIUtils.log("Starting checkCollision loop...")
+		monitoringCollisions = true
+		-- add to onTick
+		
+	end
 	
 end
 
 local function stopMonitoringPlayer(player)
 	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
+	playerCount = playerCount - 1
+	
+	-- Should only stop monitoring when we:
+		-- Have nobody in a vehicle
+		-- Are currently monitoring players
+	if (playerCount == 0) and (monitoringCollisions) then
+		PVIUtils.log("No players in vehicles, stopping checkCollision...")
+		monitoringCollisions = false
+		-- remove from onTick
+		
+	end
 	
 end
 
 local function updatePlayerBodyParts(player)
 	bodyParts = {
-		p:getBodyDamage():getBodyPart(BodyPartType.Head),
-		p:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
+		player:getBodyDamage():getBodyPart(BodyPartType.Head),
+		player:getBodyDamage():getBodyPart(BodyPartType.Neck),
+		player:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
+		player:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
+		player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
+		player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
+		player:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
+		player:getBodyDamage():getBodyPart(BodyPartType.Groin),
+		player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
+		player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
+		player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
+		player:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
 	}
 	
 	bodyPartsByName = {
-		head = p:getBodyDamage():getBodyPart(BodyPartType.Head),
-		neck = p:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		upperTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		lowerTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		upperRightArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		rightForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		rightHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		upperLeftArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		leftForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		leftHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		groin = p:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		upperRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		lowerRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		rightFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		upperLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		lowerLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		leftFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
+		head = player:getBodyDamage():getBodyPart(BodyPartType.Head),
+		neck = player:getBodyDamage():getBodyPart(BodyPartType.Neck),
+		upperTorso = player:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
+		lowerTorso = player:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
+		upperRightArm = player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
+		rightForearm = player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
+		rightHand = player:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
+		upperLeftArm = player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
+		leftForearm = player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
+		leftHand = player:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
+		groin = player:getBodyDamage():getBodyPart(BodyPartType.Groin),
+		upperRightLeg = player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
+		lowerRightLeg = player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
+		rightFoot = player:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
+		upperLeftLeg = player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
+		lowerLeftLeg = player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
+		leftFoot = player:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
 	}
 	
 	playerBodyParts[player] = {
@@ -78,13 +102,15 @@ local function updatePlayerBodyParts(player)
 		bodyPartsByName
 	}
 	
-	PVIUtils.log(#playerBodyParts)
+	bodyPartCount = bodyPartCount + 1
 	
 end
 
 local function removePlayerBodyParts(player)
-	playerBodyParts[player] = nil
-	PVIUtils.log(#playerBodyParts)
+	playerBodyParts.remove(player)
+	bodyPartCount = bodyPartCount - 1
+	
+	PVIUtils.log(bodyPartCount)
 	
 end
 

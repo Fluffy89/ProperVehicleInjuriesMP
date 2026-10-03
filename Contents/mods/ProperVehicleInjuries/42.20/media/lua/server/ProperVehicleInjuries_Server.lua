@@ -482,19 +482,19 @@ local function checkCollision()
 	if (ticks >= PVI.options.interval) then
 		for player, prevSpeed in ipairs(monitoredPlayers) do
 			local v = player:getVehicle()
-			if v == nil then goto continue end -- Skip this player if their vehicle is somehow non-existent
 			
-			local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
-			local spdDiff = math.abs((vehicleSpeed - prevSpeed))
-			
-			PVIUtils.log("Player " .. player:getFullName() .. " [Spd = " .. vehicleSpeed .. ", diff = " .. spdDiff .. "]")
-			
-			-- insert holding area here
+			if v not nil then
+				local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
+				local spdDiff = math.abs((vehicleSpeed - prevSpeed))
+				
+				PVIUtils.log("Player " .. player:getFullName() .. " [Spd = " .. math.round(vehicleSpeed) .. ", diff = " .. math.round(spdDiff) .. "]")
+				
+				-- insert holding area here
 
-			-- sets prevSpeed to current speed to track the difference in speeds between checks
-			monitoredPlayers[player] = vehicleSpeed
+				-- sets prevSpeed to current speed to track the difference in speeds between checks
+				monitoredPlayers[player] = vehicleSpeed
 			
-			::continue::
+			end
 		
 		end
 		

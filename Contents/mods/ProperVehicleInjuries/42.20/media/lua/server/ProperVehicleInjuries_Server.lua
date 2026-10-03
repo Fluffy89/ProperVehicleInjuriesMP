@@ -111,7 +111,7 @@ local function onClientCommand(module, command, player, args)
 	elseif command == "initPlayer" then
 		PVIUtils.log("Initializing bodyPart tables for: " .. player:getFullName())
 	
-	elseif command = "playerDeath" then
+	elseif command == "playerDeath" then
 		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping tables")
 	
 	end

@@ -28,7 +28,6 @@ end
 
 -----     CLIENT INITIALIZATION     -----
 local function initMod()
-	onCreatePlayer(0, getPlayer())
 	print("PVI Client Initialized!")
 	
 	-- Requires PVI_Util

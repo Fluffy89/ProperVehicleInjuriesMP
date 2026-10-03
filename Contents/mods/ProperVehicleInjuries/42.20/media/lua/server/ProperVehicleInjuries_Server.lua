@@ -78,10 +78,13 @@ local function updatePlayerBodyParts(player)
 		bodyPartsByName
 	}
 	
+	PVIUtils.log(#playerBodyParts)
+	
 end
 
 local function removePlayerBodyParts(player)
-	
+	playerBodyParts[player] = nil
+	PVIUtils.log(#playerBodyParts)
 	
 end
 
@@ -110,9 +113,11 @@ local function onClientCommand(module, command, player, args)
 		
 	elseif command == "initPlayer" then
 		PVIUtils.log("Initializing bodyPart tables for: " .. player:getFullName())
+		updatePlayerBodyParts(player)
 	
 	elseif command == "playerDeath" then
 		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping tables")
+		removePlayerBodyParts(player)
 	
 	end
 

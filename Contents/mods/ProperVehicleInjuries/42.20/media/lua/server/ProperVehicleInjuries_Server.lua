@@ -483,7 +483,7 @@ local function checkCollision()
 		for player, prevSpeed in ipairs(monitoredPlayers) do
 			local v = player:getVehicle()
 			
-			if v not nil then
+			if v ~= nil then
 				local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
 				local spdDiff = math.abs((vehicleSpeed - prevSpeed))
 				

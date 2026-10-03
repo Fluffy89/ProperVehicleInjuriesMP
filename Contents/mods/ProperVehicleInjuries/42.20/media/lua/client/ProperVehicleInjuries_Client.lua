@@ -3,6 +3,7 @@ if isServer() then return end
 PVI = PVI or {}
 PVIUtils = PVIUtils or {}
 
+-----     CLIENT COMMANDS     -----
 local function playerEnteredVehicle()
 	-- Send client command updating player entered vehicle
 	sendClientCommand(getPlayer(), "ProperVehicleInjuries", "vehicleEntered", {})
@@ -15,11 +16,19 @@ local function playerExitedVehicle()
 	
 end
 
-local function initMod()
-	local sBO = getSandboxOptions()
+local function onCreatePlayer(playerIndex, player)
+	sendClientCommand(player, "ProperVehicleInjuries", "initPlayer", {})
+	
+end
 
-	--Events.OnEnterVehicle.Add(addCheckCollision)
-	--Events.OnExitVehicle.Add(removeCheckCollision)
+local function onPlayerDeath(player)
+	sendClientCommand(getPlayer(), "ProperVehicleInjuries", "playerDeath", {})
+	
+end
+
+-----     CLIENT INITIALIZATION     -----
+local function initMod()
+	onCreatePlayer(0, getPlayer())
 	print("PVI Client Initialized!")
 	
 	-- Requires PVI_Util
@@ -32,3 +41,5 @@ end
 Events.OnGameStart.Add(initMod)
 Events.OnEnterVehicle.Add(playerEnteredVehicle)
 Events.OnExitVehicle.Add(playerExitedVehicle)
+Events.OnCreatePlayer.Add(onCreatePlayer)
+Events.OnPlayerDeath.Add(onPlayerDeath)

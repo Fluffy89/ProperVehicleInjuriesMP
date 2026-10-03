@@ -18,6 +18,7 @@ local monitoringCollisions = false
 
 -- MONITORED PLAYERS --
 local monitoredPlayers = {} -- Holds table for each player, that holds that player's previous speed and speed difference
+local playerBodyParts = {}
 
 
 -----    PLAYER MONITORING     -----
@@ -28,6 +29,59 @@ end
 
 local function stopMonitoringPlayer(player)
 	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
+	
+end
+
+local function updatePlayerBodyParts(player)
+	bodyParts = {
+		p:getBodyDamage():getBodyPart(BodyPartType.Head),
+		p:getBodyDamage():getBodyPart(BodyPartType.Neck),
+		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
+		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
+		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
+		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
+		p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
+		p:getBodyDamage():getBodyPart(BodyPartType.Groin),
+		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
+		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
+		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
+		p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
+	}
+	
+	bodyPartsByName = {
+		head = p:getBodyDamage():getBodyPart(BodyPartType.Head),
+		neck = p:getBodyDamage():getBodyPart(BodyPartType.Neck),
+		upperTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
+		lowerTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
+		upperRightArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
+		rightForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
+		rightHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
+		upperLeftArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
+		leftForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
+		leftHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
+		groin = p:getBodyDamage():getBodyPart(BodyPartType.Groin),
+		upperRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
+		lowerRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
+		rightFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
+		upperLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
+		lowerLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
+		leftFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
+	}
+	
+	playerBodyParts[player] = {
+		bodyParts,
+		bodyPartsByName
+	}
+	
+end
+
+local function removePlayerBodyParts(player)
+	
 	
 end
 
@@ -54,6 +108,12 @@ local function onClientCommand(module, command, player, args)
 	elseif command == "vehicleExited" then
 		stopMonitoringPlayer(player)
 		
+	elseif command == "initPlayer" then
+		PVIUtils.log("Initializing bodyPart tables for: " .. player:getFullName())
+	
+	elseif command = "playerDeath" then
+		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping tables")
+	
 	end
 
 end

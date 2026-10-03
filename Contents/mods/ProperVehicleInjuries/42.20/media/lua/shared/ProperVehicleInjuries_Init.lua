@@ -183,48 +183,6 @@ local function initMod ()
 		knockoutChance = sBO:getOptionByName("ProperVehicleInjuries.fatalknockoutChance"):getValue()
 	}
 	
-	
-	local p = getPlayer()
-	PVI.bodyParts = {
-		p:getBodyDamage():getBodyPart(BodyPartType.Head),
-		p:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
-	}
-
-	PVI.bodyPartsByName = {
-		head = p:getBodyDamage():getBodyPart(BodyPartType.Head),
-		neck = p:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		upperTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		lowerTorso = p:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		upperRightArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		rightForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		rightHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		upperLeftArm = p:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		leftForearm = p:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		leftHand = p:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		groin = p:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		upperRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		lowerRightLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		rightFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		upperLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		lowerLeftLeg = p:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		leftFoot = p:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
-	}
-	
 	print("PVI Core Initialized!")
 
 end

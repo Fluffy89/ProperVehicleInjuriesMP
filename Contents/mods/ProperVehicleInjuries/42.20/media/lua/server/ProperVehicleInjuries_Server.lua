@@ -26,6 +26,7 @@ local playerBodyParts = {}
 -----    PLAYER MONITORING     -----
 local function startMonitoringPlayer(player)
 	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName())
+	monitoredPlayers[player] = 0
 	playerCount = playerCount + 1
 	
 	-- Should only start monitoring checkCollisions when we:
@@ -34,7 +35,7 @@ local function startMonitoringPlayer(player)
 	if (playerCount > 0) and (not monitoringCollisions) then
 		PVIUtils.log("Starting checkCollision loop...")
 		monitoringCollisions = true
-		-- add to onTick
+		Events.OnTick.Add(checkCollision)
 		
 	end
 	
@@ -42,6 +43,7 @@ end
 
 local function stopMonitoringPlayer(player)
 	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
+	monitoredPlayers[player] = nil
 	playerCount = playerCount - 1
 	
 	-- Should only stop monitoring when we:
@@ -50,7 +52,7 @@ local function stopMonitoringPlayer(player)
 	if (playerCount == 0) and (monitoringCollisions) then
 		PVIUtils.log("No players in vehicles, stopping checkCollision...")
 		monitoringCollisions = false
-		-- remove from onTick
+		Events.OnTick.Remove(checkCollision)
 		
 	end
 	
@@ -475,79 +477,33 @@ end
 -- then get it's speed and use that speed to calculate the difference between the vehicles current speed and the speed 
 -- previously recorded by checkCollision. If the speed difference is higher than the minSpeedForInjury, then injuries 
 -- are caused based on the difference
-local function checkCollision()
-	local p = getPlayer()
-	local v = p:getVehicle()
-	
+local function checkCollision()	
 	-- ticks increases per tick, interval is a ratelimit for how often this is called
-	if (ticks >= PVI.options.interval) and (v ~= nil) then
-	
-		local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
-		local spdDiff = math.abs((vehicleSpeed - prevSpeed))
-		
-		---------------- TRANSMISSION TEST START
-		-- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
-		-- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
-		-- and causes windshield ejection from Working Seatbelts to only work in one direction.
-		if (PVI.options.forceAlignVehicleDir) then
-			local transmissionGear = v:getTransmissionNumberLetter() -- Get vehicle gear
-		
-			if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
-				v:setDir(p:getDir())
+	if (ticks >= PVI.options.interval) then
+		for player, prevSpeed in ipairs(monitoredPlayers) do
+			local v = player:getVehicle()
+			if v == nil then goto continue end -- Skip this player if their vehicle is somehow non-existent
 			
-			else
-				v:setDir(IsoDirections.valueOf(p:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
-				
-			end
-		end
-		---------------- TRANSMISSION TEST END
-		
-		-- Check if at the current speed is severe enough to cause an injury
-		if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
-			injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
+			local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
+			local spdDiff = math.abs((vehicleSpeed - prevSpeed))
 			
-			-- Get collision severity table
-			local sevSpd = getSeverityTable(spdDiff)
+			PVIUtils.log("Player " .. player:getFullName() .. " [Spd = " .. vehicleSpeed .. ", diff = " .. spdDiff .. "]")
 			
-			local seatbeltIsBuckled = false
-			if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = p:getModData().Seatbelt_sbStatus end
-						
-			-- Call core functions
-			doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
-			rollDeath(sevSpd, p) -- Roll for death
-			rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
-			
+			-- insert holding area here
 
+			-- sets prevSpeed to current speed to track the difference in speeds between checks
+			monitoredPlayers[player] = vehicleSpeed
+			
+			::continue::
+		
 		end
-
-		-- sets prevSpeed to current speed to track the difference in speeds between checks
-		prevSpeed = vehicleSpeed
+		
 		ticks = 0
 		
 	else 
 		ticks = ticks + 1
 		if injuryLockout > 0 then injuryLockout = injuryLockout - 1 end
 	end
-end
-
--- Helper functions for adding and removing checkCollision when the player enters
--- and exits a vehicle to prevent needless checks and executions.
-local function addCheckCollision()
-	if not monitoringCollisions then
-		Events.OnTick.Add(checkCollision)
-		monitoringCollisions = true
-		
-	end
-
-end
-
-local function removeCheckCollision()
-	if monitoringCollisions then
-		Events.OnTick.Remove(checkCollision)
-		monitoringCollisions = false
-		
-	end
-	
 end
 
 
@@ -576,3 +532,55 @@ end
 PVIUtils.log("Initializing server...")
 Events.OnGameStart.Add(initProperVehicleInjuriesServer)
 Events.OnClientCommand.Add(onClientCommand)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function checkCollisionHoldingArea
+	---------------- TRANSMISSION TEST START
+	-- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
+	-- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
+	-- and causes windshield ejection from Working Seatbelts to only work in one direction.
+	if (PVI.options.forceAlignVehicleDir) then
+		local transmissionGear = v:getTransmissionNumberLetter() -- Get vehicle gear
+
+		if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
+			v:setDir(p:getDir())
+		
+		else
+			v:setDir(IsoDirections.valueOf(p:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
+			
+		end
+	end
+	---------------- TRANSMISSION TEST END
+
+	-- Check if at the current speed is severe enough to cause an injury
+	if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
+		injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
+		
+		-- Get collision severity table
+		local sevSpd = getSeverityTable(spdDiff)
+		
+		local seatbeltIsBuckled = false
+		if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = p:getModData().Seatbelt_sbStatus end
+					
+		-- Call core functions
+		doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
+		rollDeath(sevSpd, p) -- Roll for death
+		rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
+		
+
+	end
+end

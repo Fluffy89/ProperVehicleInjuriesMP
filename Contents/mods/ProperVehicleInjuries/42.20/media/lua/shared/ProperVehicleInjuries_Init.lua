@@ -12,6 +12,13 @@ PVI.bodyPartsByName = {}
 -------------------------
 
 
+----- Lists to init -----
+local function modInstalled(ModID)
+	return getActivatedMods():contains(ModID)
+end
+-------------------------
+
+
 -------------- Get Functions --------------
 PVI.getOptions = function()
 	return PVI.options

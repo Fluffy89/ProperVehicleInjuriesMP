@@ -25,9 +25,13 @@ local playerBodyParts = {}
 
 -----    PLAYER MONITORING     -----
 local function startMonitoringPlayer(player)
+	if monitoredPlayers[player] ~= nil then return end
+	
 	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName())
 	monitoredPlayers[player] = 0
 	playerCount = playerCount + 1
+	PVIUtils.log("New player count: " .. playerCount)
+	PVIUtils.log("monitoringCollisions = " .. tostring(monitoringCollisions))
 	
 	-- Should only start monitoring checkCollisions when we:
 		-- Have at least 1 player in a vehicle
@@ -42,9 +46,13 @@ local function startMonitoringPlayer(player)
 end
 
 local function stopMonitoringPlayer(player)
+	if monitoredPlayers[player] == nil then return end
+
 	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
 	monitoredPlayers[player] = nil
 	playerCount = playerCount - 1
+	PVIUtils.log("New player count: " .. playerCount)
+	PVIUtils.log("monitoringCollisions = " .. tostring(monitoringCollisions))
 	
 	-- Should only stop monitoring when we:
 		-- Have nobody in a vehicle
@@ -145,6 +153,7 @@ local function onClientCommand(module, command, player, args)
 	elseif command == "playerDeath" then
 		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping tables")
 		removePlayerBodyParts(player)
+		stopMonitoringPlayer(player) -- Death from injuries may not invoke the OnExitVehicle event
 	
 	end
 
@@ -448,6 +457,8 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	
 	-- Main loop, iterate up to maxInjuries times, and for each one, calculate the injury type, time, and body location.
 	for i=1, sevSpd.maxInjuries do
+		if not p:isAlive() then return end -- Stop trying to apply injuries if player dies to their injuries
+	
 		local injureChance = ZombRand(1, 101)
 
 		if injureChance <= sevSpd.injuryChance then
@@ -571,28 +582,4 @@ function checkCollision()
 end
 
 
-local function initProperVehicleInjuriesServer()
-	local sBO = getSandboxOptions()
-	
-	PVIUtils.log("-----------------------------------------------------")
-	PVIUtils.log("Forcing 'PlayerDamageFromCrash' to false...")
-	
-	if (sBO:getOptionByName("PlayerDamageFromCrash"):getValue() == false) then
-		PVIUtils.log("'PlayerDamageFromCrash' already disabled, skipping rest of initialization. I hope you enjoy PVI :)")
-	
-	else 
-		PVIUtils.log("Disabled 'PlayerDamageFromCrash', PVI now solely handles crash injuries. I hope you enjoy PVI :)")
-		sBO:set("PlayerDamageFromCrash", false)
-		PVIUtils.log("PlayerDamageFromCrash state: " .. tostring(sBO:getOptionByName("PlayerDamageFromCrash"):getValue()))
-	
-	end
-	
-	PVIUtils.log("-----------------------------------------------------")
-	
-	PVIUtils.log("Initialized server!")
-end
-
-
-PVIUtils.log("Initializing server...")
-Events.OnGameStart.Add(initProperVehicleInjuriesServer)
 Events.OnClientCommand.Add(onClientCommand)

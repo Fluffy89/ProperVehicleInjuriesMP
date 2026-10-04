@@ -1,3 +1,4 @@
+PVIUtils = require("ProperVehicleInjuries_Utils")
 PVI = {}
 
 
@@ -50,7 +51,7 @@ local function initMod ()
 		
 	end
 	
-	PVI.options.interval = sBO:getOptionByName("ProperVehicleInjuries.interval"):getValue()
+	PVI.options.interval = sBO:getOptionByName("ProperVehicleInjuries.interval"):getValue()	
 	PVI.options.threshold = sBO:getOptionByName("ProperVehicleInjuries.threshold"):getValue()
 	PVI.options.minSpeedForInjury = sBO:getOptionByName("ProperVehicleInjuries.minSpeedForInjury"):getValue()
 	PVI.options.flatDamagePercent = sBO:getOptionByName("ProperVehicleInjuries.flatDamagePercent"):getValue() / 100
@@ -153,6 +154,24 @@ local function initMod ()
 		knockoutChance = sBO:getOptionByName("ProperVehicleInjuries.fatalknockoutChance"):getValue()
 	}
 	
+	
+	PVIUtils.log("-----------------------------------------------------")
+	PVIUtils.log("Forcing 'PlayerDamageFromCrash' to false...")
+	
+	if (sBO:getOptionByName("PlayerDamageFromCrash"):getValue() == false) then
+		PVIUtils.log("'PlayerDamageFromCrash' already disabled, skipping rest of initialization. I hope you enjoy PVI :)")
+	
+	else 
+		PVIUtils.log("Disabled 'PlayerDamageFromCrash', PVI now solely handles crash injuries. I hope you enjoy PVI :)")
+		sBO:set("PlayerDamageFromCrash", false)
+		PVIUtils.log("PlayerDamageFromCrash state: " .. tostring(sBO:getOptionByName("PlayerDamageFromCrash"):getValue()))
+	
+	end
+	
+	PVIUtils.log("-----------------------------------------------------")
+	
+	PVIUtils.log("Initialized server!")
+	
 	print("PVI Core Initialized!")
 
 end
@@ -160,4 +179,4 @@ end
 ---------------------------------------------
 
 print("Initializing ProperVehicleInjuriesMP...")
-Events.OnGameStart.Add(initMod)
+initMod()

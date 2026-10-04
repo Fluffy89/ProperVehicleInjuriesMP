@@ -7,44 +7,14 @@ PVI.lowSpd = {}
 PVI.medSpd = {}
 PVI.highSpd = {}
 PVI.fatalSpd = {}
-PVI.bodyParts = {}
-PVI.bodyPartsByName = {}
 -------------------------
 
 
------ Lists to init -----
+----- Helpers -----
 local function modInstalled(ModID)
 	return getActivatedMods():contains(ModID)
 end
 -------------------------
-
-
--------------- Get Functions --------------
-PVI.getOptions = function()
-	return PVI.options
-	
-end
-
-PVI.getLowSpeedTable = function()
-	return PVI.lowSpd
-
-end
-
-PVI.getMedSpeedTable = function()
-	return PVI.medSpd
-
-end
-
-PVI.getHighSpeedTable = function()
-	return PVI.highSpd
-
-end
-
-PVI.getFatalSpeedTable = function()
-	return PVI.fatalSpd
-
-end
--------------------------------------------
 
 
 -------------- Initialization --------------

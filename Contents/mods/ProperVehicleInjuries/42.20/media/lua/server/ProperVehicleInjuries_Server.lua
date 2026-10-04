@@ -100,8 +100,9 @@ local function updatePlayerBodyParts(player)
 	}
 	
 	playerBodyParts[player] = {
-		bodyParts,
-		bodyPartsByName
+		bodyParts = bodyParts,
+		bodyPartsByName = bodyPartsByName
+		
 	}
 	
 	bodyPartCount = bodyPartCount + 1
@@ -109,10 +110,8 @@ local function updatePlayerBodyParts(player)
 end
 
 local function removePlayerBodyParts(player)
-	playerBodyParts.remove(player)
+	playerBodyParts[player] = nil
 	bodyPartCount = bodyPartCount - 1
-	
-	PVIUtils.log(bodyPartCount)
 	
 end
 
@@ -197,59 +196,92 @@ end
 
 -- fractureFullLimb() does what it says, takes in the name of a full limb from
 -- getRandFullLimb() and breaks all 3 corresponding body parts
-local function fractureFullLimb(fullLimbName, injuryTime)
+local function fractureFullLimb(player, fullLimbName, injuryTime)
+	
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_fractureTime)
+	
 	if fullLimbName == "leftArm" then
-		PVI.bodyPartsByName.upperLeftArm:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.leftForearm:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.leftHand:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.upperLeftArm:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.leftForearm:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.leftHand:setFractureTime(injuryTime)
+		
+		-- Sync the injury so the client sees it
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.upperLeftArm, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.leftForearm, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.leftHand, flags)
 
 	elseif fullLimbName == "rightArm" then
-		PVI.bodyPartsByName.upperRightArm:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.rightForearm:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.rightHand:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.upperRightArm:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.rightForearm:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.rightHand:setFractureTime(injuryTime)
+		
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.upperRightArm, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.rightForearm, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.rightHand, flags)
 
 	elseif fullLimbName == "leftLeg" then
-		PVI.bodyPartsByName.upperLeftLeg:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.lowerLeftLeg:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.leftFoot:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.upperLeftLeg:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.lowerLeftLeg:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.leftFoot:setFractureTime(injuryTime)
+		
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.upperLeftLeg, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.lowerLeftLeg, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.leftFoot, flags)
 
 	elseif fullLimbName == "rightLeg" then
-		PVI.bodyPartsByName.upperRightLeg:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.lowerRightLeg:setFractureTime(injuryTime)
-		PVI.bodyPartsByName.rightFoot:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.upperRightLeg:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.lowerRightLeg:setFractureTime(injuryTime)
+		playerBodyParts[player].bodyPartsByName.rightFoot:setFractureTime(injuryTime)
+		
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.upperRightLeg, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.lowerRightLeg, flags)
+		syncBodyPart(playerBodyParts[player].bodyPartsByName.rightFoot, flags)
 
 	end
+	
 end
 
 -- fractures the specified bone with its respective time
 local function doFracture(boneToBreak, injuryTime)
 	boneToBreak:setFractureTime(injuryTime)
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_fractureTime)
+	syncBodyPart(boneToBreak, flags)
 end
 
 -- sets specified body part to be scratched with the respective injury time
 local function doScratch(bodyPartToInjure, injuryTime)
 	bodyPartToInjure:setScratched(true, true)
 	bodyPartToInjure:setScratchTime(injuryTime)
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_scratched, BodyPartSyncPacket.BD_scratchTime, BodyPartSyncPacket.BD_bleeding, BodyPartSyncPacket.BD_bleedingTime)
+	syncBodyPart(bodyPartToInjure, flags)
 end
 
 -- sets specified body part to be lacerated with respective injury time
 local function doCut(bodyPartToInjure, injuryTime)
 	bodyPartToInjure:setCut(true)
 	bodyPartToInjure:setCutTime(injuryTime)
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_scratched,BodyPartSyncPacket.BD_scratchTime,BodyPartSyncPacket.BD_bleeding,BodyPartSyncPacket.BD_bleedingTime)
+	syncBodyPart(bodyPartToInjure, flags)
 end
 
 -- sets the specified body part to have a deep wound plus a scratch
 local function doDeepWound(bodyPartToInjure, injuryTime)
 	bodyPartToInjure:generateDeepWound()
-	bodyPartToInjure:setScratched(true, true)
-	bodyPartToInjure:setScratchTime(injuryTime)
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_deepWounded,BodyPartSyncPacket.BD_deepWoundTime,BodyPartSyncPacket.BD_bleeding,BodyPartSyncPacket.BD_bleedingTime)
+	syncBodyPart(bodyPartToInjure, flags)
 end
 
 -- sets the specified body part to have a deep wound with glass in it plus a laceration
 local function doDeepGlass(bodyPartToInjure, injuryTime)
 	bodyPartToInjure:generateDeepShardWound()
-	bodyPartToInjure:setCut(true)
-	bodyPartToInjure:setCutTime(injuryTime)
+	
+	local flags = PVIUtils.sumLongs(BodyPartSyncPacket.BD_deepWounded,BodyPartSyncPacket.BD_deepWoundTime,BodyPartSyncPacket.BD_haveGlass,BodyPartSyncPacket.BD_bleeding,BodyPartSyncPacket.BD_bleedingTime)
+	syncBodyPart(bodyPartToInjure, flags)
 end
 
 -- Rolls a random number to determine if player should die
@@ -277,18 +309,17 @@ local function rollKnockout(p, sevSpd, seatbeltIsBuckled)
 end
 
 -- Master function that calls the above helper functions to handle injuries
-local function handleInjury(bodyPartToInjure, injuryType, injuryTime)
+local function handleInjury(player, bodyPartToInjure, injuryType, injuryTime)
 	if injuryType == "scratch" then doScratch(bodyPartToInjure, injuryTime)
 	elseif injuryType == "cut" then doCut(bodyPartToInjure, injuryTime)
 	elseif injuryType == "deepWound" then doDeepWound(bodyPartToInjure, injuryTime)
 	elseif injuryType == "deepGlass" then doDeepGlass(bodyPartToInjure, injuryTime)
 	elseif injuryType == "fracture" then doFracture(bodyPartToInjure, injuryTime)
-	elseif injuryType == "fullFracture" then fractureFullLimb(getRandFullLimb(), injuryTime) end
+	elseif injuryType == "fullFracture" then fractureFullLimb(player, getRandFullLimb(), injuryTime) end
 end
 
-local function helmetWorn()
-	local p = getPlayer()
-	local wornItems = p:getWornItems()
+local function helmetWorn(player)
+	local wornItems = player:getWornItems()
 	
 	for i=0, wornItems:size() - 1 do
 		local item = wornItems:get(i):getItem()
@@ -310,12 +341,12 @@ end
 
 -- Returns "Both", "Seatbelt", or "None" depending on if airbags are enabled & installed, seatbelts
 -- are buckled, or if neither are true. Used to calculate the damage reduction in doMultiInjury().
-local function getDamageReductionType(spdDiff, seatbeltIsBuckled)
-	local p = getPlayer()
-	local v = p:getVehicle()
+local function getDamageReductionType(player, vehicle, spdDiff, seatbeltIsBuckled)
+	-- local p = getPlayer()
+	-- local v = p:getVehicle()
 	
 	-- If the vehicle or player are nil, then immediately leave function
-	if (p == nil) or (v == nil) then return "None" end
+	-- if (p == nil) or (v == nil) then return "None" end
 	
 	if (PVI.options.airbagsEnabled) then
 		local airbagPart = WorkingSeatbelt.getAirbagPart(v:getSeat(p), v) -- Get airbag part
@@ -401,7 +432,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	
 	------------------------------------- AIRBAG END
 	
-	-- Deal flat damage to player
+	-- Deal flat damage to player & sync the packet
 	local flatDamage = spdDiff * PVI.options.flatDamagePercent * damageReductionPercent
 	p:getBodyDamage():ReduceGeneralHealth(flatDamage)
 	
@@ -421,7 +452,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 
 		if injureChance <= sevSpd.injuryChance then
 			local injuryType = getInjury(sevSpd.scratchChance, sevSpd.cutChance, sevSpd.deepWoundChance, sevSpd.deepGlassChance, sevSpd.fractureChance, sevSpd.fullLimbFractureChance)
-			local bodyPartToInjure = PVI.bodyParts[ZombRand(1, 18)]
+			local bodyPartToInjure = playerBodyParts[p].bodyParts[ZombRand(1, 18)]
 
 			local injuryTime = 10 -- Fallback injury duration
 			if (injuryType == "scratch") or (injuryType == "deepWound") then injuryTime = ZombRand(sevSpd.scratchTimeMin, sevSpd.scratchTimeMax)
@@ -439,11 +470,11 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 				end
 			end
 			
-			local helmetType = helmetWorn()
+			local helmetType = helmetWorn(p)
 			--Check if a helmet is worn, head is being injured, and helmets give protection, then reduce injury time
-			if (helmetType ~= "None") and (bodyPartToInjure == PVI.bodyPartsByName.head) and (PVI.options.helmetsGiveProtection) then
-				if (helmetWorn() == "Full") then injuryTime = injuryTime * (1 - PVI.options.fullHelmetModifier) -- FullHat should reduce the full amount
-				elseif (helmetWorn() == "Partial") then injuryTime = injuryTime * (1 - PVI.options.halfHelmetModifier) end -- While partial helmets should reduce by percentage of full, as specified in sandbox options
+			if (helmetType ~= "None") and (bodyPartToInjure == playerBodyParts[p].bodyPartsByName.head) and (PVI.options.helmetsGiveProtection) then
+				if (helmetType == "Full") then injuryTime = injuryTime * (1 - PVI.options.fullHelmetModifier) -- FullHat should reduce the full amount
+				elseif (helmetType == "Partial") then injuryTime = injuryTime * (1 - PVI.options.halfHelmetModifier) end -- While partial helmets should reduce by percentage of full, as specified in sandbox options
 			
 			-- If head not the target, then reduce the injury if WorkingSeatbelt is installed
 			elseif (PVI.options.workingSeatbeltInstalled) then
@@ -460,7 +491,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			end
 			
 			-- If neither of the above are true, don't modify injury time and just pass in the injury time specified in sandbox options
-			handleInjury(bodyPartToInjure, injuryType, injuryTime)
+			handleInjury(p, bodyPartToInjure, injuryType, injuryTime)
 		end
 	end
 end
@@ -479,19 +510,50 @@ end
 -- previously recorded by checkCollision. If the speed difference is higher than the minSpeedForInjury, then injuries 
 -- are caused based on the difference
 function checkCollision()
-	-- ticks increases per tick, interval is a ratelimit for how often this is called
-	if (ticks >= PVI.options.interval) then
-	
+	if (ticks >= PVI.options.interval) then -- Ratelimit how often we check relatively complex things to avoid lagging everything	
 		for player, prevSpeed in pairs(monitoredPlayers) do
-			local v = player:getVehicle()
+			local vehicle = player:getVehicle()
 			
-			if v ~= nil then
-				local vehicleSpeed = v:getSpeed2D() * 3.6 -- Converting m/s to km/h
+			if vehicle ~= nil then
+				local vehicleSpeed = vehicle:getSpeed2D() * 3.6 -- Converting m/s to km/h
 				local spdDiff = math.abs((vehicleSpeed - prevSpeed))
 				
-				PVIUtils.log("Player " .. player:getFullName() .. " [Spd = " .. vehicleSpeed .. ", diff = " .. spdDiff .. "]")
-				
-				-- insert holding area here
+				---------------- TRANSMISSION TEST START
+				-- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
+				-- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
+				-- and causes windshield ejection from Working Seatbelts to only work in one direction.
+				if (PVI.options.forceAlignVehicleDir) then
+					local transmissionGear = vehicle:getTransmissionNumberLetter() -- Get vehicle gear
+
+					if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
+						vehicle:setDir(player:getDir())
+					
+					else
+						vehicle:setDir(IsoDirections.valueOf(player:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
+						
+					end
+				end
+				-------------- TRANSMISSION TEST END
+
+				-- Check if at the current speed is severe enough to cause an injury
+				if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
+					injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
+					
+					-- Get collision severity table
+					local sevSpd = getSeverityTable(spdDiff)
+					
+					local seatbeltIsBuckled = false
+					-- Working Seatbelt compatibility to be implemented & tested
+					-- if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = player:getModData().Seatbelt_sbStatus end
+								
+					-- Call core functions
+					PVIUtils.log(player:getFullName() .. " was involved in a crash with spdDiff = " .. spdDiff)
+					doMultiInjury(player, vehicle, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
+					rollDeath(sevSpd, player) -- Roll for death
+					rollKnockout(player, sevSpd, seatbeltIsBuckled) -- Roll for knockout
+					
+
+				end
 
 				-- sets prevSpeed to current speed to track the difference in speeds between checks
 				monitoredPlayers[player] = vehicleSpeed
@@ -534,54 +596,3 @@ end
 PVIUtils.log("Initializing server...")
 Events.OnGameStart.Add(initProperVehicleInjuriesServer)
 Events.OnClientCommand.Add(onClientCommand)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----------------- TRANSMISSION TEST START
--- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
--- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
--- and causes windshield ejection from Working Seatbelts to only work in one direction.
--- if (PVI.options.forceAlignVehicleDir) then
-	-- local transmissionGear = v:getTransmissionNumberLetter() -- Get vehicle gear
-
-	-- if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
-		-- v:setDir(p:getDir())
-	
-	-- else
-		-- v:setDir(IsoDirections.valueOf(p:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
-		
-	-- end
--- end
----------------- TRANSMISSION TEST END
-
--- Check if at the current speed is severe enough to cause an injury
--- if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
-	-- injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
-	
-	-- Get collision severity table
-	-- local sevSpd = getSeverityTable(spdDiff)
-	
-	-- local seatbeltIsBuckled = false
-	-- if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = p:getModData().Seatbelt_sbStatus end
-				
-	-- Call core functions
-	-- doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
-	-- rollDeath(sevSpd, p) -- Roll for death
-	-- rollKnockout(p, sevSpd, seatbeltIsBuckled) -- Roll for knockout
-	
-
--- end

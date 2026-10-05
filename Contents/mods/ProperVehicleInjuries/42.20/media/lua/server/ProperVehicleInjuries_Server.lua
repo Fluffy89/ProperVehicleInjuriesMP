@@ -527,12 +527,13 @@ end
 -- previously recorded by checkCollision. If the speed difference is higher than the minSpeedForInjury, then injuries 
 -- are caused based on the difference
 function checkCollision()
-	for player, prevSpeed in pairs(monitoredPlayers) do
+	for player, playerStats in pairs(monitoredPlayers) do
 		local vehicle = player:getVehicle()
 		
 		if vehicle ~= nil then
 			local vehicleSpeed = vehicle:getCurrentSpeedKmHour() * 1.7 -- Scaling speed to 120Mph dashboard
-			local spdDiff = math.abs((vehicleSpeed - prevSpeed))
+			local prevSpeed = playerStats.prevSpeed
+			local spdDiff = math.abs((vehicleSpeed - playerStats.prevSpeed))
 			local injuryLockout = monitoredPlayers[player].injuryLockout
 			
 			-- print("[PVI - Debug] " .. player:getFullName() .. " spd = " .. vehicleSpeed .. "km/h, spdDiff = " .. spdDiff)

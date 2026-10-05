@@ -172,11 +172,14 @@ local function initMod ()
 	
 	PVIUtils.log("Initialized server!")
 	
-	print("PVI Core Initialized!")
+	PVIUtils.log("PVI Core Initialized!")
 
 end
 
 ---------------------------------------------
 
-print("Initializing ProperVehicleInjuriesMP...")
+PVIUtils.log("Initializing ProperVehicleInjuriesMP...")
 initMod()
+
+
+return PVI

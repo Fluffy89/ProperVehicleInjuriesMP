@@ -2,14 +2,12 @@
 if isClient() then return end -- SHOULD load server in SP, but NOT in MP
 
 
-PVI = PVI or {}
-PVIUtils = PVIUtils or {}
+PVI = require("ProperVehicleInjuries_Init")
+PVIUtils = require("ProperVehicleInjuries_Utils")
 
 
 -- GLOBAL CONSTANTS --
-local ticks = 0
-local prevSpeed = 0
-local injuryLockout = 40
+-- local ticks = 0
 
 
 -- GLOBAL FLAGS --
@@ -28,7 +26,7 @@ local function startMonitoringPlayer(player)
 	if monitoredPlayers[player] ~= nil then return end
 	
 	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName())
-	monitoredPlayers[player] = 0
+	monitoredPlayers[player] = {prevSpeed = 0, injuryLockout = 0}
 	playerCount = playerCount + 1
 	PVIUtils.log("New player count: " .. playerCount)
 	PVIUtils.log("monitoringCollisions = " .. tostring(monitoringCollisions))
@@ -67,52 +65,51 @@ local function stopMonitoringPlayer(player)
 end
 
 local function updatePlayerBodyParts(player)
-	bodyParts = {
-		player:getBodyDamage():getBodyPart(BodyPartType.Head),
-		player:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		player:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		player:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		player:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		player:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		player:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
-	}
-	
-	bodyPartsByName = {
-		head = player:getBodyDamage():getBodyPart(BodyPartType.Head),
-		neck = player:getBodyDamage():getBodyPart(BodyPartType.Neck),
-		upperTorso = player:getBodyDamage():getBodyPart(BodyPartType.Torso_Upper),
-		lowerTorso = player:getBodyDamage():getBodyPart(BodyPartType.Torso_Lower),
-		upperRightArm = player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_R),
-		rightForearm = player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_R),
-		rightHand = player:getBodyDamage():getBodyPart(BodyPartType.Hand_R),
-		upperLeftArm = player:getBodyDamage():getBodyPart(BodyPartType.UpperArm_L),
-		leftForearm = player:getBodyDamage():getBodyPart(BodyPartType.ForeArm_L),
-		leftHand = player:getBodyDamage():getBodyPart(BodyPartType.Hand_L),
-		groin = player:getBodyDamage():getBodyPart(BodyPartType.Groin),
-		upperRightLeg = player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_R),
-		lowerRightLeg = player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_R),
-		rightFoot = player:getBodyDamage():getBodyPart(BodyPartType.Foot_R),
-		upperLeftLeg = player:getBodyDamage():getBodyPart(BodyPartType.UpperLeg_L),
-		lowerLeftLeg = player:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L),
-		leftFoot = player:getBodyDamage():getBodyPart(BodyPartType.Foot_L)
-	}
+	local bodyDamage = player:getBodyDamage()
 	
 	playerBodyParts[player] = {
-		bodyParts = bodyParts,
-		bodyPartsByName = bodyPartsByName
+		bodyParts = {
+			bodyDamage:getBodyPart(BodyPartType.Head),
+			bodyDamage:getBodyPart(BodyPartType.Neck),
+			bodyDamage:getBodyPart(BodyPartType.Torso_Upper),
+			bodyDamage:getBodyPart(BodyPartType.Torso_Lower),
+			bodyDamage:getBodyPart(BodyPartType.UpperArm_R),
+			bodyDamage:getBodyPart(BodyPartType.ForeArm_R),
+			bodyDamage:getBodyPart(BodyPartType.Hand_R),
+			bodyDamage:getBodyPart(BodyPartType.UpperArm_L),
+			bodyDamage:getBodyPart(BodyPartType.ForeArm_L),
+			bodyDamage:getBodyPart(BodyPartType.Hand_L),
+			bodyDamage:getBodyPart(BodyPartType.Groin),
+			bodyDamage:getBodyPart(BodyPartType.UpperLeg_R),
+			bodyDamage:getBodyPart(BodyPartType.LowerLeg_R),
+			bodyDamage:getBodyPart(BodyPartType.Foot_R),
+			bodyDamage:getBodyPart(BodyPartType.UpperLeg_L),
+			bodyDamage:getBodyPart(BodyPartType.LowerLeg_L),
+			bodyDamage:getBodyPart(BodyPartType.Foot_L)
+		},
+		bodyPartsByName = {
+			head = bodyDamage:getBodyPart(BodyPartType.Head),
+			neck = bodyDamage:getBodyPart(BodyPartType.Neck),
+			upperTorso = bodyDamage:getBodyPart(BodyPartType.Torso_Upper),
+			lowerTorso = bodyDamage:getBodyPart(BodyPartType.Torso_Lower),
+			upperRightArm = bodyDamage:getBodyPart(BodyPartType.UpperArm_R),
+			rightForearm = bodyDamage:getBodyPart(BodyPartType.ForeArm_R),
+			rightHand = bodyDamage:getBodyPart(BodyPartType.Hand_R),
+			upperLeftArm = bodyDamage:getBodyPart(BodyPartType.UpperArm_L),
+			leftForearm = bodyDamage:getBodyPart(BodyPartType.ForeArm_L),
+			leftHand = bodyDamage:getBodyPart(BodyPartType.Hand_L),
+			groin = bodyDamage:getBodyPart(BodyPartType.Groin),
+			upperRightLeg = bodyDamage:getBodyPart(BodyPartType.UpperLeg_R),
+			lowerRightLeg = bodyDamage:getBodyPart(BodyPartType.LowerLeg_R),
+			rightFoot = bodyDamage:getBodyPart(BodyPartType.Foot_R),
+			upperLeftLeg = bodyDamage:getBodyPart(BodyPartType.UpperLeg_L),
+			lowerLeftLeg = bodyDamage:getBodyPart(BodyPartType.LowerLeg_L),
+			leftFoot = bodyDamage:getBodyPart(BodyPartType.Foot_L)
+		}
 		
 	}
 	
+	PVIUtils.log(player:getFullName() .. " initialized: " .. tostring(playerBodyParts[player]))
 	bodyPartCount = bodyPartCount + 1
 	
 end
@@ -147,11 +144,11 @@ local function onClientCommand(module, command, player, args)
 		stopMonitoringPlayer(player)
 		
 	elseif command == "initPlayer" then
-		PVIUtils.log("Initializing bodyPart tables for: " .. player:getFullName())
+		PVIUtils.log("Initializing bodyPart tables for: " .. player:getFullName() .. "(" .. tostring(player) .. ")")
 		updatePlayerBodyParts(player)
 	
 	elseif command == "playerDeath" then
-		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping tables")
+		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping from playerBodyParts and monitoredPlayers...")
 		removePlayerBodyParts(player)
 		stopMonitoringPlayer(player) -- Death from injuries may not invoke the OnExitVehicle event
 	
@@ -396,7 +393,7 @@ end
 local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	-- for loop iterates through the specified max injuries, and rolls if an injury should happen
 	-- for each possible maxInjury	
-
+	
 	local pTraits = p:getCharacterTraits() -- get player traits
 	
 	------------------------------------- HANDLING AIRBAG
@@ -442,8 +439,9 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	------------------------------------- AIRBAG END
 	
 	-- Deal flat damage to player & sync the packet
-	local flatDamage = spdDiff * PVI.options.flatDamagePercent * damageReductionPercent
-	p:getBodyDamage():ReduceGeneralHealth(flatDamage)
+	-- local flatDamage = spdDiff * PVI.options.flatDamagePercent * damageReductionPercent
+	-- p:getBodyDamage():ReduceGeneralHealth(flatDamage)
+	-- PVIUtils.log("General damage applied!")
 	
 	------------------------------------- EJECTION TEST START
 	--See WorkingSeatbelt_DamageEvent.lua for additional ejection criteria
@@ -503,6 +501,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			
 			-- If neither of the above are true, don't modify injury time and just pass in the injury time specified in sandbox options
 			handleInjury(p, bodyPartToInjure, injuryType, injuryTime)
+			
 		end
 	end
 end
@@ -521,65 +520,73 @@ end
 -- previously recorded by checkCollision. If the speed difference is higher than the minSpeedForInjury, then injuries 
 -- are caused based on the difference
 function checkCollision()
-	if (ticks >= PVI.options.interval) then -- Ratelimit how often we check relatively complex things to avoid lagging everything	
-		for player, prevSpeed in pairs(monitoredPlayers) do
-			local vehicle = player:getVehicle()
+	for player, prevSpeed in pairs(monitoredPlayers) do
+		local vehicle = player:getVehicle()
+		
+		if vehicle ~= nil then
+			local vehicleSpeed = vehicle:getCurrentSpeedKmHour() * 1.7 -- Scaling speed to 120Mph dashboard
+			local spdDiff = math.abs((vehicleSpeed - prevSpeed))
+			local injuryLockout = monitoredPlayers[player].injuryLockout
 			
-			if vehicle ~= nil then
-				local vehicleSpeed = vehicle:getSpeed2D() * 3.6 -- Converting m/s to km/h
-				local spdDiff = math.abs((vehicleSpeed - prevSpeed))
+			-- print("[PVI - Debug] " .. player:getFullName() .. " spd = " .. vehicleSpeed .. "km/h, spdDiff = " .. spdDiff)
+			
+			---------------- TRANSMISSION TEST START
+			-- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
+			-- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
+			-- and causes windshield ejection from Working Seatbelts to only work in one direction.
+			if (PVI.options.forceAlignVehicleDir) then
+				local transmissionGear = vehicle:getTransmissionNumberLetter() -- Get vehicle gear
+
+				if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
+					vehicle:setDir(player:getDir())
 				
-				---------------- TRANSMISSION TEST START
-				-- This is here to force PVI to update the vehicles direction while driving so that the vehicles direction
-				-- is updated as the direction it's traveling changes. Without this, the vehicles direction remains static
-				-- and causes windshield ejection from Working Seatbelts to only work in one direction.
-				if (PVI.options.forceAlignVehicleDir) then
-					local transmissionGear = vehicle:getTransmissionNumberLetter() -- Get vehicle gear
-
-					if (transmissionGear ~= "R") then -- Force vehicle dir to match player if NOT in reverse
-						vehicle:setDir(player:getDir())
+				else
+					vehicle:setDir(IsoDirections.valueOf(player:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
 					
-					else
-						vehicle:setDir(IsoDirections.valueOf(player:getDir():Rot180():name())) -- Otherwise force vehicle dir to the opposite of player
-						
-					end
 				end
-				-------------- TRANSMISSION TEST END
-
-				-- Check if at the current speed is severe enough to cause an injury
-				if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
-					injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
-					
-					-- Get collision severity table
-					local sevSpd = getSeverityTable(spdDiff)
-					
-					local seatbeltIsBuckled = false
-					-- Working Seatbelt compatibility to be implemented & tested
-					-- if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = player:getModData().Seatbelt_sbStatus end
-								
-					-- Call core functions
-					PVIUtils.log(player:getFullName() .. " was involved in a crash with spdDiff = " .. spdDiff)
-					doMultiInjury(player, vehicle, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
-					rollDeath(sevSpd, player) -- Roll for death
-					rollKnockout(player, sevSpd, seatbeltIsBuckled) -- Roll for knockout
-					
-
-				end
-
-				-- sets prevSpeed to current speed to track the difference in speeds between checks
-				monitoredPlayers[player] = vehicleSpeed
-			
 			end
+			-------------- TRANSMISSION TEST END
+
+			-- Check if at the current speed is severe enough to cause an injury
+			if (spdDiff >= PVI.options.threshold) and (prevSpeed > PVI.options.minSpeedForInjury) and (injuryLockout <= 0) then
+				monitoredPlayers[player].injuryLockout = 40 -- Prevents checkCollision from tripping multiple times in one collision
+				
+				-- Get collision severity table
+				local sevSpd = getSeverityTable(spdDiff)
+				
+				local seatbeltIsBuckled = false
+				-- Working Seatbelt compatibility to be implemented & tested
+				-- if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = player:getModData().Seatbelt_sbStatus end
+							
+				-- Call core functions
+				PVIUtils.log(player:getFullName() .. " was involved in a crash with spdDiff = " .. spdDiff)
+				doMultiInjury(player, vehicle, sevSpd, spdDiff, seatbeltIsBuckled) -- Main injury handler
+				rollDeath(sevSpd, player) -- Roll for death
+				rollKnockout(player, sevSpd, seatbeltIsBuckled) -- Roll for knockout
+				
+
+			end
+
+			-- sets prevSpeed to current speed to track the difference in speeds between checks
+			monitoredPlayers[player].prevSpeed = vehicleSpeed
+			monitoredPlayers[player].injuryLockout = monitoredPlayers[player].injuryLockout - 1
 		
 		end
-		
-		ticks = 0
-		
-	else 
-		ticks = ticks + 1
-		if injuryLockout > 0 then injuryLockout = injuryLockout - 1 end
+
 	end
+	
 end
 
+-----------     TESTING     -------------
+function detectNewPlayer(character, desc)
+	if character:getClass():getName() ~= "zombie.characters.IsoPlayer" then return end
+	
+	PVIUtils.log("New player loaded in!")
+	
+	updatePlayerBodyParts(character)
+	
+end
 
 Events.OnClientCommand.Add(onClientCommand)
+Events.OnCreateLivingCharacter.Add(detectNewPlayer)
+-- Events.OnTick.Add(detectOnlinePlayers)

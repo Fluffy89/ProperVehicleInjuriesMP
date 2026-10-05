@@ -1,40 +1,36 @@
 if isServer() then return end
 
-PVI = PVI or {}
-PVIUtils = PVIUtils or {}
+-- PVI = require("ProperVehicleInjuries_Init")
+PVIUtils = require("ProperVehicleInjuries_Utils")
 
 -----     CLIENT COMMANDS     -----
 local function playerEnteredVehicle()
 	-- Send client command updating player entered vehicle
-	sendClientCommand(getPlayer(), "ProperVehicleInjuries", "vehicleEntered", {})
+	sendClientCommand("ProperVehicleInjuries", "vehicleEntered", {})
 	
 end
 
 local function playerExitedVehicle()
 	-- Send client command updating player left vehicle
-	sendClientCommand(getPlayer(), "ProperVehicleInjuries", "vehicleExited", {})
+	sendClientCommand("ProperVehicleInjuries", "vehicleExited", {})
 	
 end
 
-local function onCreatePlayer(playerIndex, player)
-	sendClientCommand(player, "ProperVehicleInjuries", "initPlayer", {})
+local function onCreatePlayer(player)
+	if player == nil then 
+		PVIUtils.log("Nil player received in onCreatePlayer, returning.")
+		return
+		
+	end
+
+	sendClientCommand("ProperVehicleInjuries", "initPlayer", {})
+	Events.OnPlayerUpdate.Remove(onCreatePlayer)
 	
 end
 
 local function onPlayerDeath(player)
-	sendClientCommand(getPlayer(), "ProperVehicleInjuries", "playerDeath", {})
+	sendClientCommand("ProperVehicleInjuries", "playerDeath", {})
 	
-end
-
------     CLIENT INITIALIZATION     -----
-local function initMod()
-	print("PVI Client Initialized!")
-	
-	-- Requires PVI_Util
-	-- setBodyParts(0, getPlayer()) -- Core function that actually sets body part tables
-	-- Events.OnCreatePlayer.Add(setBodyParts) -- Register resetBodyParts to event so the tables reflect the current character to avoid old references
-	-- if modInstalled("WorkingSeatbelt") then initWorkingSeatbeltCompatibility(sBO) end
-	-- if modInstalled("RealKnockouts") then initRealKnockoutCompatibility(sBO) end
 end
 
 Events.OnGameStart.Add(initMod)

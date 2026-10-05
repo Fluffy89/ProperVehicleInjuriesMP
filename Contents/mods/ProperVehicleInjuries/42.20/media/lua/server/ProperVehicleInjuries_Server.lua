@@ -152,6 +152,13 @@ local function onClientCommand(module, command, player, args)
 		removePlayerBodyParts(player)
 		stopMonitoringPlayer(player) -- Death from injuries may not invoke the OnExitVehicle event
 	
+	elseif command == "playerDisconnected" then
+		PVIUtils.log("Player " .. player:getFullName() .. " has disconnected, wiping from playerBodyParts and monitoredPlayers...")
+		removePlayerBodyParts(player)
+		stopMonitoringPlayer(player)
+		
+		PVIUtils.log("Sanity: playerCount = " .. tostring(playerCount) .. ", bodyPartCount = " .. tostring(bodyPartCount))
+	
 	end
 
 end
@@ -577,7 +584,7 @@ function checkCollision()
 	
 end
 
------------     TESTING     -------------
+-----------     ALERTS     -------------
 function detectNewPlayer(character, desc)
 	if character:getClass():getName() ~= "zombie.characters.IsoPlayer" then return end
 	
@@ -589,4 +596,3 @@ end
 
 Events.OnClientCommand.Add(onClientCommand)
 Events.OnCreateLivingCharacter.Add(detectNewPlayer)
--- Events.OnTick.Add(detectOnlinePlayers)

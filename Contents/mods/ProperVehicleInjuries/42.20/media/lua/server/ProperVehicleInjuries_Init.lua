@@ -11,19 +11,13 @@ PVI.fatalSpd = {}
 -------------------------
 
 
------ Helpers -----
-local function modInstalled(ModID)
-	return getActivatedMods():contains(ModID)
-end
--------------------------
-
-
 -------------- Initialization --------------
 local function initRealKnockoutCompatibility(sBO)
 	PVI.options.seatbeltPreventKnockout = sBO:getOptionByName("Knockout.seatbeltPreventKnockout"):getValue() -- True/False if players cannot be knocked out while wearing a seatbelt
 	PVI.options.knockoutsEnabled = sBO:getOptionByName("ProperVehicleInjuries.knockoutsEnabled"):getValue() -- True/False whether knockouts are enabled or not
 	
-	print("PVI x Real Knockout Compatibility Initialized!")
+	PVIUtils.log("PVI x Real Knockout Compatibility Initialized!")
+	
 end
 
 local function initWorkingSeatbeltCompatibility(sBO)
@@ -39,17 +33,12 @@ local function initWorkingSeatbeltCompatibility(sBO)
 	
 	PVI.options.ejectionsEnabled = sBO:getOptionByName("workingSeatbelt.canPlayerBeEjected"):getValue()
 	
-	print("PVI x Working Seatbelts Compatibility Initialized!")
+	PVIUtils.log("Working Seatbelts Compatibility Initialized!")
+	
 end
 
 local function initMod ()
 	local sBO = getSandboxOptions()
-	
-	-- Should vanilla crash damage be forced to false?
-	if (sBO:getOptionByName("ProperVehicleInjuries.disableVanillaCrashDamage"):getValue() == true) then
-		sBO:set("PlayerDamageFromCrash", false)
-		
-	end
 	
 	PVI.options.interval = sBO:getOptionByName("ProperVehicleInjuries.interval"):getValue()	
 	PVI.options.threshold = sBO:getOptionByName("ProperVehicleInjuries.threshold"):getValue()
@@ -65,6 +54,10 @@ local function initMod ()
 	PVI.options.halfHelmetModifier = sBO:getOptionByName("ProperVehicleInjuries.halfHelmetModifier"):getValue() / 100
 	
 	PVI.options.forceAlignVehicleDir = sBO:getOptionByName("ProperVehicleInjuries.forceAlignVehicleDir"):getValue()
+	
+	-- Vanilla makes the spedomoter go from 0-120km/h, even when the default speed is 70km/h max. So we need
+	-- a scaling factor otherwise the speedomoter and PVI's speed difference will disagree or feel less severe/accurate.
+	PVI.options.scalingFactor = 120 / getServerOptions():getOptionByName("SpeedLimit"):getValue()
 	
 	
 	-- scratchTime is roughly 1 time unit every 1.07 hours (desired time in hours * 0.934 = time in game units)
@@ -154,29 +147,29 @@ local function initMod ()
 		knockoutChance = sBO:getOptionByName("ProperVehicleInjuries.fatalknockoutChance"):getValue()
 	}
 	
+
+	-- Should vanilla crash damage be forced to false?
+	if (sBO:getOptionByName("ProperVehicleInjuries.disableVanillaCrashDamage"):getValue() == true) then
+		PVIUtils.log("Forcing 'PlayerDamageFromCrash' to false...")
 	
-	PVIUtils.log("-----------------------------------------------------")
-	PVIUtils.log("Forcing 'PlayerDamageFromCrash' to false...")
-	
-	if (sBO:getOptionByName("PlayerDamageFromCrash"):getValue() == false) then
-		PVIUtils.log("'PlayerDamageFromCrash' already disabled, skipping rest of initialization. I hope you enjoy PVI :)")
-	
-	else 
-		PVIUtils.log("Disabled 'PlayerDamageFromCrash', PVI now solely handles crash injuries. I hope you enjoy PVI :)")
-		sBO:set("PlayerDamageFromCrash", false)
-		PVIUtils.log("PlayerDamageFromCrash state: " .. tostring(sBO:getOptionByName("PlayerDamageFromCrash"):getValue()))
-	
+		if (sBO:getOptionByName("PlayerDamageFromCrash"):getValue() == false) then
+			PVIUtils.log("'PlayerDamageFromCrash' already disabled, skipping rest of initialization. I hope you enjoy PVI :)")
+		
+		else 
+			PVIUtils.log("Disabled 'PlayerDamageFromCrash', PVI now solely handles crash injuries. I hope you enjoy PVI :)")
+			sBO:set("PlayerDamageFromCrash", false)
+			PVIUtils.log("PlayerDamageFromCrash state: " .. tostring(sBO:getOptionByName("PlayerDamageFromCrash"):getValue()))
+		
+		end
+		
 	end
 	
-	PVIUtils.log("-----------------------------------------------------")
-	
-	PVIUtils.log("Initialized server!")
-	
 	PVIUtils.log("PVI Core Initialized!")
+	
+	if PVIUtils.modInstalled("WorkingSeatbelt") then initWorkingSeatbeltCompatibility(sBO) end
 
 end
 
----------------------------------------------
 
 PVIUtils.log("Initializing ProperVehicleInjuriesMP...")
 initMod()

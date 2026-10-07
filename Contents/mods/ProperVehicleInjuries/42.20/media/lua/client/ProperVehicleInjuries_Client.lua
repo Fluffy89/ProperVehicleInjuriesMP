@@ -33,14 +33,8 @@ local function onPlayerDeath(player)
 	
 end
 
-local function onDisconnect()
-	sendClientCommand("ProperVehicleInjuries", "playerDisconnected", {})
-	
-end
-
 Events.OnGameStart.Add(initMod)
 Events.OnEnterVehicle.Add(playerEnteredVehicle)
 Events.OnExitVehicle.Add(playerExitedVehicle)
-Events.OnCreatePlayer.Add(onCreatePlayer)
+--Events.OnCreatePlayer.Add(onCreatePlayer)
 Events.OnPlayerDeath.Add(onPlayerDeath)
-Events.OnDisconnect.Add(onDisconnect)

@@ -6,8 +6,10 @@ PVI = require("ProperVehicleInjuries_Init")
 PVIUtils = require("ProperVehicleInjuries_Utils")
 
 
--- GLOBAL CONSTANTS --
--- local ticks = 0
+-- WORKING SEATBELT --
+local WS_ServerUtils = require("WorkingSeatbelt_ServerUtils")
+local WS_SharedUtils = require("WorkingSeatbelt_SharedUtils")
+local ES_EjectionUtils = require("WorkingSeatbelt_EjectUtils")
 
 
 -- GLOBAL FLAGS --
@@ -25,11 +27,9 @@ local playerBodyParts = {}
 local function startMonitoringPlayer(player)
 	if monitoredPlayers[player] ~= nil then return end
 	
-	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName())
 	monitoredPlayers[player] = {prevSpeed = 0, injuryLockout = 0}
 	playerCount = playerCount + 1
-	PVIUtils.log("New player count: " .. playerCount)
-	PVIUtils.log("monitoringCollisions = " .. tostring(monitoringCollisions))
+	PVIUtils.log("Monitoring 1 new player: " .. player:getFullName() .. " [" .. playerCount .. "]")
 	
 	-- Should only start monitoring checkCollisions when we:
 		-- Have at least 1 player in a vehicle
@@ -46,11 +46,9 @@ end
 local function stopMonitoringPlayer(player)
 	if monitoredPlayers[player] == nil then return end
 
-	PVIUtils.log("No longer monitoring player: " .. player:getFullName())
 	monitoredPlayers[player] = nil
 	playerCount = playerCount - 1
-	PVIUtils.log("New player count: " .. playerCount)
-	PVIUtils.log("monitoringCollisions = " .. tostring(monitoringCollisions))
+	PVIUtils.log("No longer monitoring player: " .. player:getFullName() .. " [" .. playerCount .. "]")
 	
 	-- Should only stop monitoring when we:
 		-- Have nobody in a vehicle
@@ -109,14 +107,15 @@ local function updatePlayerBodyParts(player)
 		
 	}
 	
-	PVIUtils.log(player:getFullName() .. " initialized: " .. tostring(playerBodyParts[player]))
 	bodyPartCount = bodyPartCount + 1
+	PVIUtils.log(player:getFullName() .. " added to playerBodyParts! [" .. bodyPartCount .. "]")
 	
 end
 
 local function removePlayerBodyParts(player)
 	playerBodyParts[player] = nil
 	bodyPartCount = bodyPartCount - 1
+	PVIUtils.log(player:getFullName() .. " removed from playerBodyParts. [" .. bodyPartCount .. "]")
 	
 end
 
@@ -151,13 +150,6 @@ local function onClientCommand(module, command, player, args)
 		PVIUtils.log("Player " .. player:getFullName() .. " died, wiping from playerBodyParts and monitoredPlayers...")
 		removePlayerBodyParts(player)
 		stopMonitoringPlayer(player) -- Death from injuries may not invoke the OnExitVehicle event
-	
-	elseif command == "playerDisconnected" then
-		PVIUtils.log("Player " .. player:getFullName() .. " has disconnected, wiping from playerBodyParts and monitoredPlayers...")
-		removePlayerBodyParts(player)
-		stopMonitoringPlayer(player)
-		
-		PVIUtils.log("Sanity: playerCount = " .. tostring(playerCount) .. ", bodyPartCount = " .. tostring(bodyPartCount))
 	
 	end
 
@@ -298,16 +290,16 @@ local function doDeepGlass(bodyPartToInjure, injuryTime)
 end
 
 -- Rolls a random number to determine if player should die
-local function rollDeath(sevSpd, p)
+local function rollDeath(sevSpd, player)
 	local chanceRolled = ZombRand(1, 101)
 	if (chanceRolled <= sevSpd.deathChance) and (PVI.options.deathFromCrash) then 
-		if p ~= nil then p:Kill(p) end
+		if player ~= nil then player:Kill(player) end
 	end
 end
 
 -- Rolls a random number and checks if the player should be knocked out on collision
-local function rollKnockout(p, sevSpd, seatbeltIsBuckled)
-	if (p:isAlive()) and (PVI.options.knockoutsEnabled) then -- If player is alive and knockouts are enabled (only enabled initRealKnockoutCompatibility())	
+local function rollKnockout(player, sevSpd, seatbeltIsBuckled)
+	if (player:isAlive()) and (PVI.options.knockoutsEnabled) then -- If player is alive and knockouts are enabled (only enabled initRealKnockoutCompatibility())	
 		
 		--Return early if seatbelts prevent knockouts AND seatbelt is buckled
 		if (PVI.options.seatbeltPreventKnockout) and (seatbeltIsBuckled) then return end
@@ -316,7 +308,7 @@ local function rollKnockout(p, sevSpd, seatbeltIsBuckled)
 		
 		--If the chance rolled is less than the knockoutChance for that severity table
 		if (chanceRolled <= sevSpd.knockoutChance) then
-			Knockout.setUnconscious(p) -- Knock the mf out
+			Knockout.setUnconscious(player) -- Knock the mf out
 		end
 	end
 end
@@ -362,7 +354,7 @@ local function getDamageReductionType(player, vehicle, spdDiff, seatbeltIsBuckle
 	-- if (p == nil) or (v == nil) then return "None" end
 	
 	if (PVI.options.airbagsEnabled) then
-		local airbagPart = WorkingSeatbelt.getAirbagPart(v:getSeat(p), v) -- Get airbag part
+		local airbagPart = WS_ServerUtils.getAirbagPart(vehicle:getSeat(player), vehicle) -- Get airbag part
 		local airbagIsUninstalled = nil
 		
 		-- Check if airbag is valid
@@ -397,14 +389,14 @@ local function getDamageReductionType(player, vehicle, spdDiff, seatbeltIsBuckle
 end
 
 -- Function handles calling handleInjury() with the injuries respective body part, injury type, and injury time. 
-local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
+local function doMultiInjury(player, vehicle, sevSpd, spdDiff, seatbeltIsBuckled)
 	-- for loop iterates through the specified max injuries, and rolls if an injury should happen
 	-- for each possible maxInjury	
 	
-	local pTraits = p:getCharacterTraits() -- get player traits
+	local pTraits = player:getCharacterTraits() -- get player traits
 	
 	------------------------------------- HANDLING AIRBAG
-	local reductionType = getDamageReductionType(spdDiff, seatbeltIsBuckled)
+	local reductionType = getDamageReductionType(player, vehicle, spdDiff, seatbeltIsBuckled)
 	local damageReductionPercent = 0 -- Default damage and fracture values if no airbag or seatbelts are installed or worn
 	local fractureReductionPercent = 0
 	local airbagCondition = 1
@@ -412,14 +404,14 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	if (PVI.options.workingSeatbeltInstalled) then	
 	
 		--Get condition of airbag
-		if (PVI.options.airbagsAffectedByCondition) and (WorkingSeatbelt.getAirbagPart(v:getSeat(p), v) ~= nil) then		
-			airbagCondition = WorkingSeatbelt.getAirbagPart(v:getSeat(p), v):getCondition() / 100
+		if (PVI.options.airbagsAffectedByCondition) and (WS_ServerUtils.getAirbagPart(vehicle:getSeat(player), vehicle) ~= nil) then		
+			airbagCondition = WS_ServerUtils.getAirbagPart(vehicle:getSeat(player), vehicle):getCondition() / 100
 		
 		end
 	
 		-- Set reduction percentage
 		if (reductionType == "Both") then
-			WorkingSeatbelt.deployAirbag(p, v:getId(), v:getSeat(p)) -- Deploy the airbag
+			WS_SharedUtils.deployAirbag(player, vehicle) -- Deploy the airbag
 			damageReductionPercent = (PVI.options.seatbeltDamageReduction + (PVI.options.airbagDamageReduction * airbagCondition))
 			fractureReductionPercent = (PVI.options.seatbeltFractureReduction + (PVI.options.airbagFractureReduction * airbagCondition))
 		
@@ -428,7 +420,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			fractureReductionPercent = PVI.options.seatbeltFractureReduction
 		
 		elseif (reductionType == "Airbag") then
-			WorkingSeatbelt.deployAirbag(p, v:getId(), v:getSeat(p)) -- Deploy the airbag
+			WS_SharedUtils.deployAirbag(player, vehicle) -- Deploy the airbag
 			damageReductionPercent = (PVI.options.airbagDamageReduction * airbagCondition)
 			fractureReductionPercent = (PVI.options.airbagFractureReduction * airbagCondition)
 			
@@ -446,29 +438,29 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 	------------------------------------- AIRBAG END
 	
 	-- Deal flat damage to player & sync the packet
-	-- local flatDamage = spdDiff * PVI.options.flatDamagePercent * damageReductionPercent
-	-- p:getBodyDamage():ReduceGeneralHealth(flatDamage)
-	-- PVIUtils.log("General damage applied!")
+	local flatDamage = spdDiff * PVI.options.flatDamagePercent * damageReductionPercent
+	player:getBodyDamage():ReduceGeneralHealth(flatDamage)
 	
 	------------------------------------- EJECTION TEST START
-	--See WorkingSeatbelt_DamageEvent.lua for additional ejection criteria
-	--p:Say(string.format("%.2f", spdDiff) .. ", pDir= " .. tostring(p:getDir()) .. ", vDir: " .. tostring(v:getDir()))
 	if (PVI.options.workingSeatbeltInstalled) and (PVI.options.ejectionsEnabled) then
-		if (WorkingSeatbelt.shouldBeEjected(p, v, spdDiff)) then
-			Events.OnTick.Add(WorkingSeatbelt.ejectPlayer)
+		if (WS_EjectUtils.shouldBeEjected(player, vehicle, spdDiff)) then
+			-- Events.OnTick.Add(WorkingSeatbelt.ejectPlayer)
+			WS_EjectUtils.ejectPlayer(player)
+			
 		end
+		
 	end
 	------------------------------------- EJECTION TEST END
 	
-	-- Main loop, iterate up to maxInjuries times, and for each one, calculate the injury type, time, and body location.
+	-- Main lool iterate up to maxInjuries times, and for each one, calculate the injury type, time, and body location.
 	for i=1, sevSpd.maxInjuries do
-		if not p:isAlive() then return end -- Stop trying to apply injuries if player dies to their injuries
+		if not player:isAlive() then return end -- Stop trying to apply injuries if player dies to their injuries
 	
 		local injureChance = ZombRand(1, 101)
 
 		if injureChance <= sevSpd.injuryChance then
 			local injuryType = getInjury(sevSpd.scratchChance, sevSpd.cutChance, sevSpd.deepWoundChance, sevSpd.deepGlassChance, sevSpd.fractureChance, sevSpd.fullLimbFractureChance)
-			local bodyPartToInjure = playerBodyParts[p].bodyParts[ZombRand(1, 18)]
+			local bodyPartToInjure = playerBodyParts[player].bodyParts[ZombRand(1, 18)]
 
 			local injuryTime = 10 -- Fallback injury duration
 			if (injuryType == "scratch") or (injuryType == "deepWound") then injuryTime = ZombRand(sevSpd.scratchTimeMin, sevSpd.scratchTimeMax)
@@ -486,7 +478,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 				end
 			end
 			
-			local helmetType = helmetWorn(p)
+			local helmetType = helmetWorn(player)
 			--Check if a helmet is worn, head is being injured, and helmets give protection, then reduce injury time
 			if (helmetType ~= "None") and (bodyPartToInjure == playerBodyParts[p].bodyPartsByName.head) and (PVI.options.helmetsGiveProtection) then
 				if (helmetType == "Full") then injuryTime = injuryTime * (1 - PVI.options.fullHelmetModifier) -- FullHat should reduce the full amount
@@ -507,7 +499,7 @@ local function doMultiInjury(p, v, sevSpd, spdDiff, seatbeltIsBuckled)
 			end
 			
 			-- If neither of the above are true, don't modify injury time and just pass in the injury time specified in sandbox options
-			handleInjury(p, bodyPartToInjure, injuryType, injuryTime)
+			handleInjury(player, bodyPartToInjure, injuryType, injuryTime)
 			
 		end
 	end
@@ -531,7 +523,7 @@ function checkCollision()
 		local vehicle = player:getVehicle()
 		
 		if vehicle ~= nil then
-			local vehicleSpeed = vehicle:getCurrentSpeedKmHour() * 1.7 -- Scaling speed to 120Mph dashboard
+			local vehicleSpeed = vehicle:getCurrentSpeedKmHour() * PVI.options.scalingFactor -- Scaling speed to 120Mph dashboard
 			local prevSpeed = playerStats.prevSpeed
 			local spdDiff = math.abs((vehicleSpeed - playerStats.prevSpeed))
 			local injuryLockout = monitoredPlayers[player].injuryLockout
@@ -563,8 +555,7 @@ function checkCollision()
 				local sevSpd = getSeverityTable(spdDiff)
 				
 				local seatbeltIsBuckled = false
-				-- Working Seatbelt compatibility to be implemented & tested
-				-- if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = player:getModData().Seatbelt_sbStatus end
+				if (PVI.options.workingSeatbeltInstalled) then seatbeltIsBuckled = WS_SharedUtils.isWearingSeatbelt(player) end
 							
 				-- Call core functions
 				PVIUtils.log(player:getFullName() .. " was involved in a crash with spdDiff = " .. spdDiff)
@@ -572,7 +563,6 @@ function checkCollision()
 				rollDeath(sevSpd, player) -- Roll for death
 				rollKnockout(player, sevSpd, seatbeltIsBuckled) -- Roll for knockout
 				
-
 			end
 
 			-- sets prevSpeed to current speed to track the difference in speeds between checks
@@ -595,5 +585,22 @@ function detectNewPlayer(character, desc)
 	
 end
 
+function detectPlayerDisconnect()
+	local onlinePlayers = getOnlinePlayers()
+	
+	for player, _ in pairs(playerBodyParts) do
+		if not (onlinePlayers:contains(player)) then -- Player is offline, cleanup
+			PVIUtils.log("Player " .. player:getFullName() .. " no longer connected, cleaning up...")
+			stopMonitoringPlayer(player)
+			removePlayerBodyParts(player)
+			PVIUtils.log("Sanity: playerCount = " .. tostring(playerCount) .. ", bodyPartCount = " .. tostring(bodyPartCount))
+			
+		end
+	
+	end
+
+end
+
+Events.EveryOneMinute.Add(detectPlayerDisconnect) -- EveryHours
 Events.OnClientCommand.Add(onClientCommand)
 Events.OnCreateLivingCharacter.Add(detectNewPlayer)

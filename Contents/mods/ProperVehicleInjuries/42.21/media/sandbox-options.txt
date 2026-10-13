@@ -114,6 +114,14 @@ option ProperVehicleInjuries.debugReadMe
 	translation = debugReadMe,
 }
 
+option ProperVehicleInjuries.debugMode
+{
+	type = boolean,
+	default = false,
+	page = PVIDebug,
+	translation = debugMode,
+}
+
 option ProperVehicleInjuries.disableVanillaCrashDamage
 {
 	type = boolean,

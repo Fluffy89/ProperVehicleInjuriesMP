@@ -1,6 +1,7 @@
 PVIUtils = {}
 
 PVIUtils.log = function (msg)
+	if not SandboxVars.ProperVehicleInjuries.debugMode then return end
 	print("[PVI Util] " .. msg)
 
 end

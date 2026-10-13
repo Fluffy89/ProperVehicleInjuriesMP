@@ -38,7 +38,11 @@ local function initWorkingSeatbeltCompatibility(sBO)
 end
 
 local function initMod ()
+	PVIUtils.log("Initializing ProperVehicleInjuriesMP...")
+
 	local sBO = getSandboxOptions()
+	
+	PVI.options.debugEnabled = sBO:getOptionByName("ProperVehicleInjuries.debugMode"):getValue()
 	
 	PVI.options.interval = sBO:getOptionByName("ProperVehicleInjuries.interval"):getValue()	
 	PVI.options.threshold = sBO:getOptionByName("ProperVehicleInjuries.threshold"):getValue()
@@ -171,8 +175,13 @@ local function initMod ()
 end
 
 
-PVIUtils.log("Initializing ProperVehicleInjuriesMP...")
-initMod()
+if isServer() then -- Server only event to initialize, otherwise sandbox options aren't populated properly yet.
+	Events.OnServerStarted.Add(initMod)
+
+elseif not isClient() then -- SP only event to initialize, otherwise sandbox options aren't populated properly yet.
+	Events.OnGameStart.Add(initMod)
+
+end
 
 
 return PVI

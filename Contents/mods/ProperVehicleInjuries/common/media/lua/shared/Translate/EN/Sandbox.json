@@ -46,6 +46,9 @@
 	"Sandbox_debugReadMe": "--- Debug Read Me ---",
 	"Sandbox_debugReadMe_tooltip": "The below options are either experimental or intended for debugging. It is highly recommended to not change these settings from their default values unless you've been told otherwise.",
 	
+	"Sandbox_debugMode": "Debug Mode",
+	"Sandbox_debugMode_tooltip": "When enabled, prints helpful debugging information to the console.",
+	
 	"Sandbox_disableVanillaCrashDamage": "Disable Vanilla Crash Damage",
 	"Sandbox_disableVanillaCrashDamage_tooltip": "When checked, PVI forces the vanilla sandbox option 'Player Damage From Crash' to false. WARNING: Unchecking this option and then re-enabling 'Player Damage From Crash' will cause collision injuries/damage caused by PVI and vanilla to stack.",
 	

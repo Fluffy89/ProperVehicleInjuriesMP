@@ -558,7 +558,7 @@ end
 
 -----------     ALERTS     -------------
 function detectNewPlayer(character, desc)
-	if character:getClass():getName() ~= "zombie.characters.IsoPlayer" then return end
+	if tostring(character:getClass()) ~= "class zombie.characters.IsoPlayer" then return end
 	
 	PVIUtils.log("New player loaded in!")
 	
